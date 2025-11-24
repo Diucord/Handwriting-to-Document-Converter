@@ -1,0 +1,94 @@
+/* src/DownloadPage.module.css */
+
+/* 전체 모바일 뷰 컨테이너 */
+.appContainer {
+    width: 393px; 
+    height: 100vh;
+    margin-left: auto;
+    margin-right: auto;
+    display: flex;
+    justify-content: center;
+    background-color: #ffffff;
+    overflow: hidden;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    font-family: 'Noto Sans KR', sans-serif; 
+}
+
+/* 중앙 정렬 컨텐츠 래퍼 */
+.contentWrapper {
+    height: 100vh;
+    width: 393px; 
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px; /* px-6 */
+    text-align: center;
+}
+
+/* 아이콘을 담는 원형 컨테이너 (빨간색 배경) */
+.iconContainer {
+    /* 3D 아이콘 이미지를 사용하므로, 배경색/그림자는 이미지에 의존 */
+    width: 150px;
+    height: 150px;
+    /* rounded-2xl bg-red-500 shadow-xl mb-8 */
+    border-radius: 16px; 
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 10px; 
+}
+
+/* 다운로드 이미지 (download.png) 자체의 크기 조정 */
+.downloadIcon {
+    width: 150px; /* 아이콘 컨테이너 크기에 맞춤 */
+    height: 150px;
+}
+
+/* 제목 스타일 */
+.title {
+    font-size: 20px; /* text-xl */
+    font-weight: bold; /* font-bold */
+    color: #374151; /* text-gray-800 */
+    margin-bottom: 8px; /* mb-2 */
+}
+
+/* 메시지 스타일 */
+.message {
+    color: #6b7280; /* text-gray-500 */
+    margin-bottom: 32px; /* mb-8 */
+    font-size: 16px;
+}
+
+/* PDF 다운로드 버튼 */
+.downloadButton {
+    width: 80%;
+    background-color: #3b82f6; /* bg-blue-500 */
+    color: #ffffff;
+    padding-top: 16px; /* py-4 */
+    padding-bottom: 16px;
+    border-radius: 30px; /* rounded-xl */
+    font-weight: bold;
+    font-size: 16px; /* text-lg */
+    margin-bottom: 16px; /* mb-4 */
+    border: none;
+    cursor: pointer;
+}
+
+/* 다운로드 완료 텍스트 */
+.downloadCompleteText {
+    color: #059669; /* text-green-600 */
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 16px; /* mb-4 */
+    font-size: 16px;
+}
+
+/* 홈으로 돌아가기 버튼 */
+.homeButton {
+    color: #6b7280; /* text-gray-500 */
+    text-decoration: underline;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+}

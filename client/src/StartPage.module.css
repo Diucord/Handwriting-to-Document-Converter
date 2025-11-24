@@ -1,0 +1,219 @@
+/* src/StartPage.module.css */
+
+/* 전체 모바일 뷰 컨테이너 */
+.appContainer {
+  position: relative;
+  width: 393px;
+  height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Noto Sans KR', sans-serif; 
+}
+
+/* Header */
+.header {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.appName {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+}
+.profileImage {
+  position: absolute;
+  right: 24px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* 탭 메뉴 (Pills) */
+.tabs {
+  position: absolute;
+  top: 75px;
+  left: 24px;
+  display: flex;
+  gap: 12px;
+}
+.tabActive {
+  padding: 8px 25px;
+  background-color: #000000;
+  color: #ffffff;
+  border-radius: 9999px; /* rounded-full */
+  font-size: 14px;
+  font-weight: 500;
+}
+.tabInactive {
+  padding: 8px 16px;
+  background-color: #f3f4f6; /* gray-100 */
+  color: #000000;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+/* 안내 문구 */
+.message {
+  position: absolute;
+  top: 388px;
+  width: 100%;
+  text-align: center;
+  color: #6b7280; /* gray-500 */
+  font-size: 18px;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+/* 문서 정리 내역 컨테이너 */
+.historyContent {
+    position: absolute;
+    top: 170px; /* Tabs 아래에 배치 */
+    left: 0;
+    width: 100%;
+    padding: 0 24px;
+    box-sizing: border-box;
+}
+
+/* 내역 목록 스타일 */
+.historyList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* 내역 항목 스타일 */
+.historyItem {
+    padding: 15px;
+    background-color: #f6f6f6; /* 회색 배경 */
+    border-radius: 8px;
+    text-align: left;
+    font-size: 16px;
+    font-weight: 500;
+    color: #000000;
+    /* 클릭 가능한 항목처럼 보이게 그림자 추가 */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); 
+}
+
+/* 액션 시트 (Action Sheet) */
+.actionSheet {
+  position: absolute;
+  bottom: 23%;
+  left: 0;
+  width: 100%;
+  padding-top: 25px;
+  display: flex;
+  transition: transform 0.3s ease-out;
+  background-color: rgba(255, 255, 255, 0.8); /* bg-white/80 */
+  backdrop-filter: blur(20px); /* backdrop-blur-xl */
+  border-top-left-radius: 30px; /* rounded-t-3xl */
+  border-top-right-radius: 30px;
+  box-shadow: 0 -10px 15px rgba(0, 0, 0, 0.1); /* shadow-xl */
+  z-index: 20;
+}
+.actionSheetHidden {
+  transform: translateY(100%);
+  display: flex;
+}
+.actionSheetVisible {
+  transform: translateY(0);
+  display: flex;
+}
+.actionSheetTitle {
+  text-align: center;
+  color: #000000;
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-size: 16px;
+}
+.actionButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 80%; /* mx-auto w-11/12 */
+  margin: 0 auto;
+}
+.actionButton {
+  width: 100%;
+  padding: 16px 24px;
+  background-color: #e5e7eb; /* gray-200 */
+  border-radius: 30px; /* rounded-2xl */
+  border: none;
+  font-weight: 700;
+  font-size: 16px;
+  cursor: pointer;
+}
+.cameraButton {
+  color: #ef4444; /* text-red-500 */
+}
+.fileButton, .galleryButton {
+  color: #000000;
+}
+
+/* 하단 네비게이션 바 */
+.navBar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 4%;
+  border-top: 1px solid #e5e7eb; /* border-t border-gray-200 */
+  background-color: #ffffff;
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-start;
+  padding-top: 20px;
+  padding-bottom: 15%;
+  z-index: 30;
+}
+.navButton {
+  padding-top: 8px;
+  font-size: 18px;
+  background-color: #ffffff;
+  border: none;
+}
+.convertButton {
+  padding: 10px 28px;
+  background-color: #3b82f6; /* bg-blue-500 */
+  border-radius: 9999px;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 16px;
+  border: none;
+  box-shadow: 0 4px 6px rgba(59, 130, 246, 0.5); /* shadow-lg shadow-blue-500/50 */
+}
+
+/* Home Indicator */
+.homeIndicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background-color: #000000;
+  border-radius: 9999px;
+  z-index: 40;
+}
+
+.inputHidden {
+    /* Tailwind 'hidden'의 순수 CSS equivalent */
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+}

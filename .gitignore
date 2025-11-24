@@ -1,0 +1,22 @@
+Dockerfile
+nvm
+.dockerignore
+converted
+uploads
+gcloud
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# 환경 변수 파일 (API 키 포함)
+.env
+.env.local
+client/.env
+client/.env.local
+server/.env
+server/.env.local
+
+# 빌드 결과물 (배포 시 새로 생성됩니다)
+client/build
+client/dist
+client/out
