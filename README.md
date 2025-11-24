@@ -37,6 +37,7 @@ With a mobile-friendly user interface (UI), users can easily convert handwritten
 
 ## Project Structure
 
+```bash
 ├── client/           # Frontend (React)
 ├── server/           # Backend (Express + Gemini API)
 │   ├── uploads/      # Uploaded images
@@ -45,6 +46,7 @@ With a mobile-friendly user interface (UI), users can easily convert handwritten
 ├── Dockerfile        # Container setup
 ├── gcloud/           # Deployment configuration
 └── README.md
+```
 
 ---
 
