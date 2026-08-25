@@ -1,0 +1,17 @@
+# 이미지에 넣지 않을 것들 — 빌드 속도와 이미지 크기에 직접 영향
+node_modules
+**/node_modules
+__pycache__
+**/__pycache__
+*.pyc
+.git
+.env
+**/.env
+client
+uploads
+converted
+server/uploads
+server/converted
+*.db
+*.sqlite3
+temp

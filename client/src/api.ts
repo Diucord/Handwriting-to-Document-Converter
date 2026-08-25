@@ -1,4 +1,14 @@
-const SERVER_BASE_URL = `http://${window.location.hostname}:4000`;
+// 백엔드 주소.
+//
+// 배포 시에는 빌드 전에 VITE_API_BASE_URL 을 지정합니다.
+//   예) VITE_API_BASE_URL=https://api.example.com npm run build
+//
+// 지정하지 않으면 개발 환경으로 보고 같은 호스트의 4000 포트를 씁니다.
+// (프로덕션에서 이 기본값을 쓰면 HTTPS 페이지에서 HTTP 를 호출하게 되어
+//  브라우저가 요청을 차단합니다)
+const SERVER_BASE_URL =
+  import.meta.env["VITE_API_BASE_URL"]?.replace(/\/$/, "") ||
+  `http://${window.location.hostname}:4000`;
 
 export { SERVER_BASE_URL };
 
