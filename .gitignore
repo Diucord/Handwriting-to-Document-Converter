@@ -1,0 +1,12 @@
+node_modules/
+__pycache__/
+*.pyc
+.env
+.env.local
+uploads/
+converted/
+server/uploads/
+server/converted/
+client/dist/
+*.db
+*.sqlite3

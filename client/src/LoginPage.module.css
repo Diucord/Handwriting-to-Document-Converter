@@ -1,0 +1,148 @@
+.appContainer {
+  position: relative;
+  width: 393px;
+  height: 100vh;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #ffffff;
+  overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Noto Sans KR', sans-serif;
+}
+
+.header {
+  position: absolute;
+  top: 8px;
+  left: 0;
+  width: 100%;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.appName {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+}
+
+.formArea {
+  position: absolute;
+  top: 120px;
+  left: 0;
+  width: 100%;
+  padding: 0 32px;
+  box-sizing: border-box;
+}
+
+.title {
+  font-size: 24px;
+  font-weight: 700;
+  color: #000000;
+  margin-bottom: 32px;
+}
+
+.inputGroup {
+  margin-bottom: 20px;
+}
+
+.label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  margin-bottom: 8px;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  font-size: 15px;
+  font-family: 'Noto Sans KR', sans-serif;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #3b82f6;
+}
+
+.input::placeholder {
+  color: #9ca3af;
+}
+
+.error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-bottom: 12px;
+}
+
+.loginButton {
+  width: 100%;
+  padding: 16px;
+  background-color: #3b82f6;
+  color: #ffffff;
+  border: none;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background-color 0.2s;
+}
+
+.loginButton:hover {
+  background-color: #2563eb;
+}
+
+.loginButton:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.bottomLinks {
+  position: absolute;
+  bottom: 120px;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+.linkButton {
+  background: none;
+  border: none;
+  color: #6b7280;
+  font-size: 14px;
+  font-family: 'Noto Sans KR', sans-serif;
+  cursor: pointer;
+  padding: 0;
+}
+
+.linkButton:hover {
+  color: #3b82f6;
+}
+
+.divider {
+  color: #d1d5db;
+  font-size: 14px;
+}
+
+.homeIndicator {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 134px;
+  height: 5px;
+  background-color: #000000;
+  border-radius: 9999px;
+  z-index: 40;
+}
