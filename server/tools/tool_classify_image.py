@@ -22,7 +22,7 @@ import logging
 from typing import Any
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
-from utils.clients import get_langchain_openai, parse_llm_json
+from utils.clients import get_langchain_openai, parse_llm_json, downscale_b64_image, image_content_part, log_usage
 
 logger = logging.getLogger(__name__)
 
@@ -173,14 +173,15 @@ def classify_image(image_b64: str, page_index: int, placeholder_index: int) -> d
             "original_b64": image_b64,
         }
 
-    llm = get_langchain_openai("gpt-4o")
+    llm = get_langchain_openai(task="classify")
     content = [
         {"type": "text", "text": _CLASSIFY_PROMPT},
-        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_b64}"}},
+        image_content_part(image_b64, detail="low"),
     ]
 
     try:
         response = llm.invoke([HumanMessage(content=content)])
+        log_usage("classify", response)
         raw_content = response.content
         if isinstance(raw_content, list):
             text = "\n".join(part.get("text", "") if isinstance(part, dict) else str(part) for part in raw_content)

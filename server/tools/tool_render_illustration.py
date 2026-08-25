@@ -27,7 +27,7 @@ import logging
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 
-from utils.clients import get_openai_client, get_langchain_openai
+from utils.clients import get_openai_client, get_langchain_openai, downscale_b64_image, image_content_part, log_usage
 
 logger = logging.getLogger(__name__)
 
@@ -287,17 +287,15 @@ def render_illustration(image_b64: str, index: int) -> dict:
     # - Cover labels, shapes, positions, relationships, layout.
     # - Provide a portrait/landscape hint on the last line.
     try:
-        llm = get_langchain_openai("gpt-4o")
+        llm = get_langchain_openai(task="vision")
 
         analysis_content = [
             {"type": "text", "text": _ANALYSIS_PROMPT},
-            {
-                "type": "image_url",
-                "image_url": {"url": f"data:image/png;base64,{image_b64}"},
-            },
+            image_content_part(image_b64, detail="high"),
         ]
 
         analysis_response = llm.invoke([HumanMessage(content=analysis_content)])
+        log_usage("illustration.analysis", analysis_response)
         description = (analysis_response.content or "").strip()
 
         # If the description is too short, treat it as analysis failure.
@@ -379,16 +377,14 @@ def render_illustration(image_b64: str, index: int) -> dict:
             try:
                 verify_content = [
                     {"type": "text", "text": _VERIFY_PROMPT},
-                    {
-                        "type": "image_url",
-                        "image_url": {"url": f"data:image/png;base64,{image_b64}"},
-                    },
+                    image_content_part(image_b64, detail="high"),
                     {
                         "type": "image_url",
                         "image_url": {"url": f"data:image/png;base64,{output_b64}"},
                     },
                 ]
                 verify_response = llm.invoke([HumanMessage(content=verify_content)])
+                log_usage("illustration.verify", verify_response)
                 verify_text = (verify_response.content or "").strip()
                 first_line = verify_text.split("\n")[0].strip().upper()
 

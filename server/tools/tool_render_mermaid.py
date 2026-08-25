@@ -30,7 +30,7 @@ import logging
 from html import escape as html_escape
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
-from utils.clients import get_langchain_openai, parse_llm_json
+from utils.clients import get_langchain_openai, parse_llm_json, downscale_b64_image, image_content_part, log_usage
 from utils.puppeteer_runner import render_html_to_png
 
 logger = logging.getLogger(__name__)
@@ -171,19 +171,17 @@ def render_mermaid(image_b64: str, index: int) -> dict:
             "base64_png": "",
         }
 
-    llm = get_langchain_openai("gpt-4o")
+    llm = get_langchain_openai(task="generate")
 
     content = [
         {"type": "text", "text": _MERMAID_PROMPT},
-        {
-            "type": "image_url",
-            "image_url": {"url": f"data:image/png;base64,{image_b64}"},
-        },
+        image_content_part(image_b64, detail="high"),
     ]
 
     try:
         # --- Step 1: LLM -> Mermaid JSON ---
         response = llm.invoke([HumanMessage(content=content)])
+        log_usage("mermaid", response)
         parsed = parse_llm_json(response.content or "")
 
         if not isinstance(parsed, dict):

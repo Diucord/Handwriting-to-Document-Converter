@@ -16,7 +16,7 @@ import json
 import logging
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
-from utils.clients import get_langchain_openai, parse_llm_json
+from utils.clients import get_langchain_openai, parse_llm_json, downscale_b64_image, image_content_part, log_usage
 from utils.puppeteer_runner import render_html_to_png
 
 logger = logging.getLogger(__name__)
@@ -123,14 +123,15 @@ def render_chartjs(image_b64: str, index: int) -> dict:
         {"index": int, "strategy": "chartjs", "base64_png": str}
         On failure, strategy falls back to "preserve_original".
     """
-    llm = get_langchain_openai("gpt-4o")
+    llm = get_langchain_openai(task="generate")
     content = [
         {"type": "text", "text": _CHARTJS_PROMPT},
-        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_b64}"}},
+        image_content_part(image_b64, detail="high"),
     ]
 
     try:
         response = llm.invoke([HumanMessage(content=content)])
+        log_usage("chartjs", response)
         text = response.content or ""
         parsed = parse_llm_json(text)
 

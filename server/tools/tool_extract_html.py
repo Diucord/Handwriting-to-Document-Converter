@@ -18,6 +18,7 @@ Supported output strategies:
 - preserve_original
 """
 
+import os
 import io
 import re
 import base64
@@ -33,6 +34,47 @@ try:
     _PIL_AVAILABLE = True
 except ImportError:
     _PIL_AVAILABLE = False
+
+
+# 추출에 쓸 모델. 환경변수로 올리고 내릴 수 있다.
+_EXTRACT_MODEL = os.getenv("MODEL_EXTRACT", "").strip() or "gemini-2.5-flash"
+
+# 모델로 보낼 이미지의 긴 변 상한(px). utils.clients 와 같은 기본값을 쓴다.
+_MAX_SEND_SIDE = int(os.getenv("MAX_IMAGE_SIDE", "1536"))
+
+
+def _downscale_for_model(pil_img: "PIL.Image.Image") -> "PIL.Image.Image":
+    """모델 전송용으로만 축소한다. 원본은 크롭에 계속 쓰이므로 건드리지 않는다."""
+    try:
+        w, h = pil_img.size
+        longest = max(w, h)
+        if longest <= _MAX_SEND_SIDE:
+            return pil_img
+        ratio = _MAX_SEND_SIDE / float(longest)
+        out = pil_img.resize(
+            (max(1, int(w * ratio)), max(1, int(h * ratio))), PIL.Image.LANCZOS
+        )
+        logger.info("[extract_html] 전송용 축소 %sx%s -> %sx%s", w, h, out.width, out.height)
+        return out
+    except Exception as exc:  # noqa: BLE001
+        logger.warning("[extract_html] 축소 실패, 원본 전송: %s", exc)
+        return pil_img
+
+
+def _log_gemini_usage(response) -> None:
+    """Gemini 응답의 토큰 사용량을 남긴다."""
+    try:
+        u = getattr(response, "usage_metadata", None)
+        if not u:
+            return
+        logger.info(
+            "[usage] extract input=%s output=%s total=%s",
+            getattr(u, "prompt_token_count", None),
+            getattr(u, "candidates_token_count", None),
+            getattr(u, "total_token_count", None),
+        )
+    except Exception:  # noqa: BLE001
+        pass
 
 
 def _preprocess_image(pil_img: "PIL.Image.Image") -> "PIL.Image.Image":
@@ -257,10 +299,20 @@ def extract_html(image_b64: str, index: int) -> dict:
         # Preprocess for cleaner AI analysis
         processed_img = _preprocess_image(pil_img)
 
+        # 모델에 보낼 이미지만 축소한다.
+        #
+        # 원본(pil_img)은 아래 _parse_placeholders 에서 영역을 잘라낼 때
+        # 그대로 써야 하므로 건드리지 않는다. 축소본은 전송용이다.
+        # 리사이즈가 없던 시절에는 폰카 원본(4000px급)이 그대로 올라가
+        # 비전 토큰의 대부분을 차지했다.
+        sent_img = _downscale_for_model(processed_img)
+
         response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[_PROMPT, processed_img],
+            model=_EXTRACT_MODEL,
+            contents=[_PROMPT, sent_img],
         )
+
+        _log_gemini_usage(response)
 
         html = _clean_html(response.text or "")
         placeholders, placeholder_images, placeholder_bboxes, html = _parse_placeholders(

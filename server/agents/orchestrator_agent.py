@@ -15,6 +15,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 
 from langgraph.graph import StateGraph, END
 from agents.state import AgentState
+from utils.clients import downscale_b64_image
 
 # Max parallel API calls per step (avoid rate limits)
 _MAX_WORKERS = 4
@@ -198,9 +199,19 @@ def _classify_and_render_single(region: dict) -> tuple[int, int, str, str, dict 
     original_b64 = region.get("original_b64", "")
     bbox = region.get("bbox")
 
+    # 축소를 여기서 한 번만 한다.
+    #
+    # 같은 영역 이미지가 분류 1회 + 렌더 1회로 두 번 모델에 나가는데,
+    # 각 호출부에서 따로 줄이면 동일한 리사이즈를 두 번 수행하게 된다.
+    # 한 번 줄여 두면 이후 호출은 이미 상한 이하라 그대로 통과한다.
+    #
+    # preserve_original 로 떨어질 때 이 축소본이 최종 산출물이 되므로,
+    # 원본 화질이 필요한 경우를 대비해 원본도 함께 들고 간다.
+    sent_b64 = downscale_b64_image(original_b64)
+
     # Step 1: Classify
     cls_result = classify_image.invoke({
-        "image_b64": original_b64,
+        "image_b64": sent_b64,
         "page_index": page_idx,
         "placeholder_index": ph_idx,
     })
@@ -216,13 +227,13 @@ def _classify_and_render_single(region: dict) -> tuple[int, int, str, str, dict 
         return page_idx, ph_idx, "", strategy, bbox
 
     if strategy == "math_graph":
-        out = render_math.invoke({"image_b64": original_b64, "index": page_idx})
+        out = render_math.invoke({"image_b64": sent_b64, "index": page_idx})
     elif strategy == "mermaid":
-        out = render_mermaid.invoke({"image_b64": original_b64, "index": page_idx})
+        out = render_mermaid.invoke({"image_b64": sent_b64, "index": page_idx})
     elif strategy == "chartjs":
-        out = render_chartjs.invoke({"image_b64": original_b64, "index": page_idx})
+        out = render_chartjs.invoke({"image_b64": sent_b64, "index": page_idx})
     elif strategy == "illustration_redraw":
-        out = render_illustration.invoke({"image_b64": original_b64, "index": page_idx})
+        out = render_illustration.invoke({"image_b64": sent_b64, "index": page_idx})
         # render_illustration may internally decide text_only
         if (out or {}).get("strategy") == "text_only":
             return page_idx, ph_idx, "", "text_only", bbox

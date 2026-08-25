@@ -27,7 +27,7 @@ import os
 from langchain_core.tools import tool
 from langchain_core.messages import HumanMessage
 
-from utils.clients import get_langchain_openai, parse_llm_json
+from utils.clients import get_langchain_openai, parse_llm_json, downscale_b64_image, image_content_part, log_usage
 
 logger = logging.getLogger(__name__)
 
@@ -146,11 +146,12 @@ def render_math(image_b64: str, index: int) -> dict:
 
     # ── Step 1: GPT-4o → matplotlib code ──
     try:
-        llm = get_langchain_openai("gpt-4o")
+        llm = get_langchain_openai(task="generate")
         response = llm.invoke([HumanMessage(content=[
             {"type": "text", "text": _ANALYSIS_PROMPT},
-            {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{image_b64}"}},
+            image_content_part(image_b64, detail="high"),
         ])])
+        log_usage("math", response)
 
         parsed = parse_llm_json(response.content or "")
         if not isinstance(parsed, dict):
