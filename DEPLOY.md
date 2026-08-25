@@ -16,7 +16,34 @@ Notaformat 백엔드(FastAPI + LangGraph)를 컨테이너로 올리는 방법입
 Docker 이미지로 만들면 Railway·Render·Fly.io 어디에 올리든 동일하게 동작하고,
 로컬에서 같은 방식으로 검증할 수 있습니다.
 
-## 로컬에서 확인
+## 로컬 개발 (Docker 없이)
+
+백엔드와 프런트를 **명령 하나로** 함께 띄웁니다.
+
+```bash
+npm run setup    # 최초 1회 — Python 패키지 + npm 의존성 설치
+npm run dev      # 백엔드(4000) + 프런트(5173) 동시 실행
+```
+
+`http://localhost:5173` 이 개발용 화면입니다. Vite 가 `/api` 와 `/converted`
+요청을 4000 포트로 프록시하므로 별도 설정이 필요 없습니다.
+
+| 스크립트 | 하는 일 |
+|---|---|
+| `npm run dev` | 두 서버를 함께 실행. Ctrl+C 한 번에 둘 다 종료(`-k`) |
+| `npm run dev:server` | 백엔드만 (uvicorn, 포트 4000, 자동 리로드) |
+| `npm run dev:client` | 프런트만 (vite, 포트 5173) |
+
+### 사전 조건
+
+- **MySQL 이 떠 있어야 합니다.** `server/.env` 의 `DATABASE_URL` 이 로컬 MySQL 을
+  가리킵니다. 서버가 없으면 기동 시 접속 오류가 납니다. MySQL 없이 돌리려면
+  `DATABASE_URL` 을 비우세요 — SQLite 파일로 자동 전환됩니다.
+- **Python 의존성은 `requirements.txt` 로 설치합니다.** 이걸 건너뛰면
+  `ModuleNotFoundError: No module named 'pymysql'` (또는 `jose`) 로 기동이
+  실패합니다. 두 패키지 모두 requirements 에 있으니 `npm run setup` 이면 됩니다.
+
+## Docker 로 확인
 
 ```bash
 # 1) 환경변수 준비

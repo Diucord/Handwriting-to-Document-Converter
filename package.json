@@ -1,6 +1,11 @@
 {
+  "name": "notaformat",
+  "private": true,
   "scripts": {
-    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\""
+    "dev": "concurrently -k -n server,client -c blue,magenta \"npm:dev:server\" \"npm:dev:client\"",
+    "dev:server": "cd server && python -m uvicorn main:app --reload --host 0.0.0.0 --port 4000",
+    "dev:client": "npm run dev --prefix client",
+    "setup": "python -m pip install -r requirements.txt && npm install && npm install --prefix client"
   },
   "dependencies": {
     "markdown-it": "^14.1.0",
