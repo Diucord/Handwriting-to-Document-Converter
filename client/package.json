@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "notaform-client",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -28,5 +28,6 @@
     "typescript": "~5.9.3",
     "typescript-eslint": "^8.46.3",
     "vite": "^7.2.2"
-  }
+  },
+  "description": "손글씨·노트 이미지를 구조화된 PDF 문서로 변환하는 에이전트 파이프라인"
 }

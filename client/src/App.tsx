@@ -28,6 +28,10 @@ export default function App() {
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryItem[]>([]);
   const [progress, setProgress] = useState<number>(0);
   const [progressMessage, setProgressMessage] = useState<string>("");
+  // 파이프라인 단계 (extract·classify·render·assemble) — 변환 화면에서 표시
+  const [stage, setStage] = useState<string>("");
+  // 현재 단계의 세부 진행 (예: 3/8 페이지)
+  const [stageDetail, setStageDetail] = useState<{ done: number; total: number } | null>(null);
 
   const { user, loading, login, logout, refreshUser, updateProfile, uploadProfileImage } = useAuth();
 
@@ -45,6 +49,10 @@ export default function App() {
           const data = await res.json();
           setProgress(data.percent || 0);
           setProgressMessage(data.message || "");
+          if (data.stage) setStage(data.stage);
+          setStageDetail(
+            data.detail && data.detail.total ? data.detail : null
+          );
 
           if (data.status === "done") {
             clearInterval(interval);
@@ -71,6 +79,8 @@ export default function App() {
     setExportFormat(format);
     setProgress(0);
     setProgressMessage("변환 준비 중...");
+    setStage("extract");
+    setStageDetail(null);
     setStep("convert");
 
     const form = new FormData();
@@ -130,6 +140,8 @@ export default function App() {
     setWordUrl("");
     setProgress(0);
     setProgressMessage("");
+    setStage("");
+    setStageDetail(null);
     setStep("start");
   };
 
@@ -192,6 +204,8 @@ export default function App() {
           images={images}
           progress={progress}
           progressMessage={progressMessage}
+          stage={stage}
+          stageDetail={stageDetail}
         />
       )}
 

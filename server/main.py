@@ -159,6 +159,7 @@ async def convert_progress(conversion_id: str):
             return {
                 "percent": 100,
                 "message": "완료",
+                "stage": "assemble",
                 "status": "done",
                 "pdfUrl": result.get("pdfUrl", ""),
                 "wordUrl": result.get("wordUrl", ""),
@@ -176,6 +177,10 @@ async def convert_progress(conversion_id: str):
     return {
         "percent": progress.get("percent", 0),
         "message": progress.get("message", ""),
+        # 4단계 파이프라인 중 현재 위치 (extract·classify·render·assemble)
+        "stage": progress.get("stage", ""),
+        # 현재 단계의 세부 진행 (예: {"done": 3, "total": 8})
+        "detail": progress.get("detail", {}),
         "status": "processing",
     }
 

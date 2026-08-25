@@ -109,7 +109,7 @@ def extract_pages_via_tool(state: AgentState) -> dict:
     total = len(images)
 
     if cid:
-        set_progress(cid, 0, f"텍스트 추출 중... (0/{total})")
+        set_progress(cid, 0, f"텍스트 추출 중... (0/{total})", stage="extract")
 
     # Parallel extraction
     page_results: dict[int, tuple] = {}  # page_idx -> (img_b64, result) or None for failures
@@ -124,7 +124,8 @@ def extract_pages_via_tool(state: AgentState) -> dict:
             page_idx = futures[future]
             if cid:
                 pct = int((done_count / max(total, 1)) * 25)
-                set_progress(cid, pct, f"텍스트 추출 중... ({done_count}/{total})")
+                set_progress(cid, pct, f"텍스트 추출 중... ({done_count}/{total})", stage="extract")
+                set_stage_detail(cid, done_count, total)
             try:
                 page_idx, img_b64, result = future.result()
                 page_results[page_idx] = (img_b64, result)
@@ -240,7 +241,7 @@ def classify_and_render_via_tool(state: AgentState) -> dict:
 
     if not diagram_regions:
         if cid:
-            set_progress(cid, 85, "렌더링할 시각 요소 없음")
+            set_progress(cid, 85, "렌더링할 시각 요소 없음", stage="render")
         return {"rendered_images": rendered_images, "classified_regions": []}
 
     region_results: dict[tuple[int, int], str] = {}
@@ -248,7 +249,7 @@ def classify_and_render_via_tool(state: AgentState) -> dict:
     total = len(diagram_regions)
 
     if cid:
-        set_progress(cid, 25, f"시각 요소 처리 중... (0/{total})")
+        set_progress(cid, 25, f"시각 요소 처리 중... (0/{total})", stage="classify")
 
     # Parallel classify + render
     with ThreadPoolExecutor(max_workers=_MAX_WORKERS) as pool:
@@ -262,7 +263,8 @@ def classify_and_render_via_tool(state: AgentState) -> dict:
             done_count += 1
             if cid:
                 pct = 25 + int((done_count / max(total, 1)) * 60)
-                set_progress(cid, pct, f"시각 요소 처리 중... ({done_count}/{total})")
+                set_progress(cid, pct, f"시각 요소 처리 중... ({done_count}/{total})", stage="render")
+                set_stage_detail(cid, done_count, total)
             try:
                 page_idx, ph_idx, b64, strategy, bbox = future.result()
                 region_results[(page_idx, ph_idx)] = b64
@@ -300,13 +302,13 @@ def assemble_document_via_tool(state: AgentState) -> dict:
     """
     cid = state.get("_conversion_id", "")
     if cid:
-        set_progress(cid, 90, "PDF 문서 조립 중...")
+        set_progress(cid, 90, "PDF 문서 조립 중...", stage="assemble")
 
     rendered_images = state.get("rendered_images", [])
     pdf_path = assemble_pdf.invoke({"rendered_images": rendered_images, "output_path": ""})
 
     if cid:
-        set_progress(cid, 98, "PDF 생성 완료")
+        set_progress(cid, 98, "PDF 생성 완료", stage="assemble")
 
     return {"final_pdf_path": pdf_path or "", "final_word_path": ""}
 
@@ -331,14 +333,45 @@ graph = builder.compile()
 _progress_store: dict[str, dict] = {}
 
 
-def set_progress(conversion_id: str, percent: int, message: str = ""):
-    """Update progress for a conversion job."""
-    _progress_store[conversion_id] = {"percent": percent, "message": message}
+# 파이프라인 단계 식별자. 프런트엔드가 어느 노드를 실행 중인지 표시하는 데 씁니다.
+#   extract   — 페이지에서 텍스트·영역 추출
+#   classify  — 영역별 렌더 전략 판정
+#   render    — 전략에 따라 수식·다이어그램·차트 생성
+#   assemble  — PDF 조립
+STAGES = ("extract", "classify", "render", "assemble")
+
+
+def set_progress(
+    conversion_id: str, percent: int, message: str = "", stage: str = ""
+):
+    """Update progress for a conversion job.
+
+    stage 를 함께 넘기면 프런트엔드가 4단계 파이프라인 중 현재 위치를
+    표시할 수 있습니다. 비워 두면 직전 단계를 유지합니다.
+    """
+    prev = _progress_store.get(conversion_id, {})
+    _progress_store[conversion_id] = {
+        "percent": percent,
+        "message": message,
+        "stage": stage or prev.get("stage", ""),
+        # 단계별 세부 진행(예: 3/8 페이지)을 그대로 노출
+        "detail": prev.get("detail", {}),
+    }
+
+
+def set_stage_detail(conversion_id: str, done: int, total: int):
+    """현재 단계의 세부 진행 상황(완료/전체)을 기록합니다."""
+    entry = _progress_store.setdefault(
+        conversion_id, {"percent": 0, "message": "", "stage": "", "detail": {}}
+    )
+    entry["detail"] = {"done": done, "total": total}
 
 
 def get_progress(conversion_id: str) -> dict:
     """Get current progress for a conversion job."""
-    return _progress_store.get(conversion_id, {"percent": 0, "message": ""})
+    return _progress_store.get(
+        conversion_id, {"percent": 0, "message": "", "stage": "", "detail": {}}
+    )
 
 
 def clear_progress(conversion_id: str):
@@ -349,13 +382,13 @@ def clear_progress(conversion_id: str):
 def orchestrate_conversion_process(state: dict, conversion_id: str = "") -> dict:
     """Execute LangGraph StateGraph pipeline with progress tracking."""
     if conversion_id:
-        set_progress(conversion_id, 0, "변환 준비 중...")
+        set_progress(conversion_id, 0, "변환 준비 중...", stage="extract")
 
     state["_conversion_id"] = conversion_id
     result = graph.invoke(state)
     result.pop("_conversion_id", None)
 
     if conversion_id:
-        set_progress(conversion_id, 100, "완료")
+        set_progress(conversion_id, 100, "완료", stage="assemble")
 
     return result
