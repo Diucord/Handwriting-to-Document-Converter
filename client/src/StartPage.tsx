@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Home, Share2 } from "lucide-react";
+import { Home, Share2, Camera, FolderOpen, Images, ChevronRight } from "lucide-react";
 import Logo from "./Logo";
 import { apiGet, SERVER_BASE_URL } from "./api";
 import type { User } from "./useAuth";
@@ -324,21 +324,33 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
             onClick={handleCameraButtonClick}
             className={`${styles.actionButton} ${styles.cameraButton}`}
           >
-            카메라
+            <span className={styles["actionIcon"]} aria-hidden="true">
+              <Camera size={19} strokeWidth={2} />
+            </span>
+            <span className={styles["actionLabel"]}>카메라</span>
+            <ChevronRight size={17} strokeWidth={2.2} className={styles["actionChev"]} aria-hidden="true" />
           </button>
 
           <button
             onClick={handleFileGalleryClick}
             className={`${styles.actionButton} ${styles.fileButton}`}
           >
-            파일
+            <span className={styles["actionIcon"]} aria-hidden="true">
+              <FolderOpen size={19} strokeWidth={2} />
+            </span>
+            <span className={styles["actionLabel"]}>파일</span>
+            <ChevronRight size={17} strokeWidth={2.2} className={styles["actionChev"]} aria-hidden="true" />
           </button>
 
           <button
             onClick={handleFileGalleryClick}
             className={`${styles.actionButton} ${styles.galleryButton}`}
           >
-            갤러리
+            <span className={styles["actionIcon"]} aria-hidden="true">
+              <Images size={19} strokeWidth={2} />
+            </span>
+            <span className={styles["actionLabel"]}>갤러리</span>
+            <ChevronRight size={17} strokeWidth={2.2} className={styles["actionChev"]} aria-hidden="true" />
           </button>
         </div>
       </div>

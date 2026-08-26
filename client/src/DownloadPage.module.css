@@ -1,4 +1,6 @@
-/* src/DownloadPage.module.css */
+/* src/DownloadPage.module.css
+   레퍼런스의 "Application approved" 모달 구조를 따릅니다.
+   성공 아이콘 → 큰 제목 → 보조 문구 → 풀와이드 주버튼 → 보조 버튼. */
 
 .appContainer {
     /* ScreenNav 가 absolute 로 얹히므로 기준점이 필요합니다 */
@@ -9,109 +11,134 @@
     margin-right: auto;
     display: flex;
     justify-content: center;
-    background-color: #ffffff;
+    background-color: var(--bg-tray);
     overflow: hidden;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Noto Sans KR', sans-serif;
+    -webkit-font-smoothing: antialiased;
 }
 
 .contentWrapper {
-    width: 393px;
+    width: 100%;
     height: 100vh;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 40px 24px 32px;
+    padding: 68px 20px calc(24px + env(safe-area-inset-bottom));
     overflow-y: auto;
     box-sizing: border-box;
 }
 
-/* 제목 */
-.title {
-    font-size: 20px;
-    font-weight: bold;
-    color: #374151;
-    margin-bottom: 6px;
-    text-align: center;
-}
-
-/* 이미지 수 메시지 */
-.message {
-    color: #6b7280;
-    font-size: 14px;
+/* 성공 표시 — 레퍼런스의 초록 원형 배지 */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 74px;
+    height: 74px;
     margin-bottom: 20px;
+    border-radius: 50%;
+    background: rgba(52, 199, 89, 0.12);
+    color: var(--green);
+    flex: none;
+}
+
+/* 제목 — 레퍼런스처럼 크고 굵게 */
+.title {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.32;
+    color: var(--ink);
+    margin: 0 0 8px;
     text-align: center;
 }
 
-/* ── 썸네일 그리드 ── */
+.message {
+    color: var(--ink-2);
+    font-size: 14.5px;
+    font-weight: 500;
+    line-height: 1.6;
+    margin: 0 0 26px;
+    text-align: center;
+}
+
+/* ── 썸네일 — 흰 카드 안에 ── */
 .thumbnailGrid {
     width: 100%;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 8px;
-    margin-bottom: 28px;
+    padding: 14px;
+    margin-bottom: 26px;
+    box-sizing: border-box;
+    background: var(--bg-card);
+    border-radius: var(--r-card);
+    box-shadow: var(--shadow-card);
 }
 
 .thumbnail {
     width: 100%;
     aspect-ratio: 1 / 1;
     object-fit: cover;
-    border-radius: 8px;
-    border: 1px solid #e5e7eb;
-    background-color: #f3f4f6;
+    border-radius: 10px;
+    background-color: var(--bg-sunken);
 }
 
-/* ── 다운로드 버튼 2개 ── */
+/* ── 버튼 ── */
 .buttonRow {
     width: 100%;
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 24px;
-}
-
-.pdfButton {
-    width: 100%;
-    background-color: #3b82f6;
-    color: #ffffff;
-    padding: 16px 0;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 15px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.15s;
-}
-
-.pdfButton:active {
-    background-color: #2563eb;
-}
-
-.wordButton {
-    width: 100%;
-    background-color: #10b981;
-    color: #ffffff;
-    padding: 16px 0;
-    border-radius: 30px;
-    font-weight: bold;
-    font-size: 15px;
-    border: none;
-    cursor: pointer;
-    transition: background-color 0.15s;
-}
-
-.wordButton:active {
-    background-color: #059669;
-}
-
-/* 홈으로 돌아가기 */
-.homeButton {
-    color: #6b7280;
-    text-decoration: underline;
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 14px;
+    gap: 10px;
     margin-top: auto;
-    padding-top: 8px;
+}
+
+.pdfButton,
+.wordButton {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    height: 52px;
+    padding: 0 20px;
+    background-color: var(--blue);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--r-inner);
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.pdfButton:active,
+.wordButton:active {
+    background-color: var(--blue-press);
+}
+
+/* 홈으로 — 레퍼런스의 "I'll do it later" 보조 버튼 */
+.homeButton {
+    width: 100%;
+    height: 50px;
+    margin-top: 10px;
+    background: var(--bg-card);
+    border: 1px solid var(--line);
+    border-radius: var(--r-inner);
+    color: var(--ink-2);
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.homeButton:active {
+    background: var(--bg-sunken);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pdfButton, .wordButton, .homeButton { transition: none; }
 }

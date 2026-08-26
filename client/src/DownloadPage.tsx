@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import { CircleCheck, Download } from "lucide-react";
 import ScreenNav from './ScreenNav';
 import styles from './DownloadPage.module.css';
 
@@ -34,9 +35,13 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
             <ScreenNav onBack={onBack} onHome={onFinish} title="변환 완료" />
             <div className={styles.contentWrapper}>
 
-                <h2 className={styles.title}>문서 생성 완료!</h2>
+                <span className={styles["badge"]} aria-hidden="true">
+                    <CircleCheck size={38} strokeWidth={2} />
+                </span>
+
+                <h2 className={styles.title}>문서가 완성되었습니다</h2>
                 <p className={styles.message}>
-                    {images.length}장의 이미지가 변환되었습니다
+                    이미지 {images.length}장을 구조화된 문서로 변환했습니다.
                 </p>
 
                 {/* 원본 이미지 썸네일 그리드 */}
@@ -58,6 +63,7 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
                             onClick={() => handleDownload(pdfUrl, "converted_document.pdf")}
                             className={styles.pdfButton}
                         >
+                            <Download size={18} strokeWidth={2.3} aria-hidden="true" />
                             PDF 다운로드
                         </button>
                     )}
@@ -66,6 +72,7 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
                             onClick={() => handleDownload(wordUrl, "converted_document.docx")}
                             className={styles.wordButton}
                         >
+                            <Download size={18} strokeWidth={2.3} aria-hidden="true" />
                             Word 다운로드
                         </button>
                     )}

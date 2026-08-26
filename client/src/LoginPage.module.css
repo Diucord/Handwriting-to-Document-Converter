@@ -7,7 +7,7 @@
   background-color: #ffffff;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Noto Sans KR', sans-serif;
 }
 
 .header {
@@ -61,7 +61,7 @@
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   font-size: 15px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Noto Sans KR', sans-serif;
   outline: none;
   box-sizing: border-box;
   transition: border-color 0.2s;
@@ -90,7 +90,7 @@
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Noto Sans KR', sans-serif;
   cursor: pointer;
   margin-top: 8px;
   transition: background-color 0.2s;
@@ -121,7 +121,7 @@
   border: none;
   color: #6b7280;
   font-size: 14px;
-  font-family: 'Noto Sans KR', sans-serif;
+  font-family: 'Pretendard', 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Noto Sans KR', sans-serif;
   cursor: pointer;
   padding: 0;
 }
