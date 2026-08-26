@@ -99,7 +99,7 @@
   div[class*="navBar"] {
     /* env() 만 쓰면 홈 인디케이터가 없는 기기에서 0 으로 풀려 바닥에
        딱 붙습니다. 기본 여백을 먼저 두고 그 위에 safe-area 를 더합니다. */
-    padding-bottom: calc(22px + env(safe-area-inset-bottom)) !important;
+    padding-bottom: calc(30px + env(safe-area-inset-bottom)) !important;
     height: auto !important;
     min-height: 60px;
   }

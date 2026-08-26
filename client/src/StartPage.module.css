@@ -56,10 +56,14 @@
   white-space: nowrap;
 }
 .profileImage {
-  width: 28px;
-  height: 28px;
+  /* div 에서 button 으로 바꿨으므로 기본 스타일을 지웁니다 */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  background: transparent;
   border-radius: 50%;
-  overflow: hidden;
   cursor: pointer;
   flex-shrink: 0;
 }
@@ -163,11 +167,12 @@
 /* 안내 문구 */
 .message {
   position: absolute;
-  top: 168px;
+  top: 106px;
   left: 20px;
   right: 20px;
-  bottom: 210px;
-  /* 안쪽 EmptyState 가 자체 정렬을 하므로 여기서는 자리만 잡습니다 */
+  /* 네비바 실측 높이에 맞춥니다. 이전 210px 은 네비바(85px)보다
+     125px 커서 빈 상태가 위로 밀려 있었습니다. */
+  bottom: 96px;
   display: flex;
 }
 
@@ -177,7 +182,7 @@
   top: 168px;
   left: 20px;
   right: 20px;
-  bottom: 210px;
+  bottom: 96px;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
 }
@@ -375,7 +380,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px calc(22px + env(safe-area-inset-bottom));
+  padding: 12px 20px calc(30px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   background: var(--bg-card);
   border-top: 1px solid var(--line);

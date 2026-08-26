@@ -2,6 +2,7 @@ import { useRef, useState, useEffect } from "react";
 import { Home, Share2, Camera, FolderOpen, Images, ChevronRight } from "lucide-react";
 import Logo from "./Logo";
 import EmptyState from "./EmptyState";
+import Avatar from "./Avatar";
 import { apiGet, SERVER_BASE_URL } from "./api";
 import type { User } from "./useAuth";
 import styles from "./StartPage.module.css";
@@ -46,7 +47,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
 
   const profileSrc = user?.profile_image_url
     ? `${SERVER_BASE_URL}${user.profile_image_url}`
-    : "/profile.png";
+    : null;
 
   // 이력 불러오기
   useEffect(() => {
@@ -162,16 +163,13 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
           >
             {user ? user.nickname : "로그인하기"}
           </span>
-          <div
+          <button
             className={styles.profileImage}
             onClick={user ? onGoProfile : onGoLogin}
+            aria-label={user ? "내 프로필" : "로그인"}
           >
-            <img
-              src={profileSrc}
-              alt="profile"
-              className={styles.profileImg}
-            />
-          </div>
+            <Avatar size={30} src={profileSrc} name={user?.nickname} />
+          </button>
         </div>
       </div>
 
