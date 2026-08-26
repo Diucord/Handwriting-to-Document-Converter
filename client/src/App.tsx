@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LandingPage from "./LandingPage";
+import SharedPage from "./SharedPage";
 import "./appShell.css";
 import StartPage from "./StartPage";
 import ConversionPage from "./ConversionPage";
@@ -31,6 +32,13 @@ export interface SessionHistoryItem {
 
 export default function App() {
   // 첫 화면은 랜딩. 체험하기를 누르면 로그인 없이 업로드 화면으로 갑니다.
+  // 공유 링크(/s/{token})는 상태가 아니라 주소로 들어옵니다.
+  // 라우터가 없으므로 최초 진입 시 한 번 읽습니다.
+  const [shareToken, setShareToken] = useState<string | null>(() => {
+    const m = window.location.pathname.match(/^\/s\/([A-Za-z0-9_-]+)\/?$/);
+    return m ? m[1]! : null;
+  });
+
   const [step, setStep] = useState<Stage>("landing");
   const [images, setImages] = useState<File[]>([]);
   const [pdfUrl, setPdfUrl] = useState<string>("");
@@ -158,6 +166,20 @@ export default function App() {
 
   if (loading) {
     return null;
+  }
+
+  // 공유 링크로 들어온 경우. 로그인 여부와 무관하게 이 화면만 보여줍니다.
+  if (shareToken) {
+    return (
+      <SharedPage
+        token={shareToken}
+        onGoHome={() => {
+          window.history.pushState({}, "", "/");
+          setShareToken(null);
+          setStep("landing");
+        }}
+      />
+    );
   }
 
   // 랜딩은 풀와이드라 셸을 씌우지 않습니다.
