@@ -17,6 +17,7 @@ import {
   Download,
 } from "lucide-react";
 import Logo from "./Logo";
+import Mockup from "./Mockup";
 import styles from "./LandingPage.module.css";
 
 interface Props {
@@ -159,36 +160,7 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
             회원가입 없이 바로 변환해 볼 수 있습니다
           </p>
 
-          {/* 목업 — 변환 전후 */}
-          <div className={styles["mock"]}>
-            <div className={styles["mockCol"]}>
-              <span className={styles["mockTag"]}>손글씨 노트</span>
-              <div className={`${styles["mockCard"]} ${styles["mockBefore"]}`}>
-                <span className={styles["scribble"]} style={{ width: "82%" }} />
-                <span className={styles["scribble"]} style={{ width: "94%" }} />
-                <span className={styles["scribble"]} style={{ width: "70%" }} />
-                <span className={styles["scribbleBox"]} />
-                <span className={styles["scribble"]} style={{ width: "88%" }} />
-                <span className={styles["scribble"]} style={{ width: "62%" }} />
-              </div>
-            </div>
-
-            <div className={styles["mockArrow"]} aria-hidden="true">
-              <ArrowRight size={22} strokeWidth={2.5} />
-            </div>
-
-            <div className={styles["mockCol"]}>
-              <span className={styles["mockTag"]}>구조화된 PDF</span>
-              <div className={`${styles["mockCard"]} ${styles["mockAfter"]}`}>
-                <span className={styles["lineHead"]} />
-                <span className={styles["line"]} style={{ width: "100%" }} />
-                <span className={styles["line"]} style={{ width: "92%" }} />
-                <span className={styles["formula"]}>∫ f(x) dx = F(x) + C</span>
-                <span className={styles["line"]} style={{ width: "96%" }} />
-                <span className={styles["line"]} style={{ width: "74%" }} />
-              </div>
-            </div>
-          </div>
+          <Mockup />
         </div>
       </section>
 
@@ -298,8 +270,47 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
         </div>
       </section>
 
-      {/* ── 재생성하는 요소 ── */}
+      {/* ── 실제 화면 ── */}
       <section className={`${styles["section"]} ${styles["sectionAlt"]}`}>
+        <div className={`${styles["sectionInner"]} ${styles["showcase"]}`}>
+          <div className={styles["showcaseText"]}>
+            <span className={styles["kicker"]}>실제 화면</span>
+            <h2 className={styles["sectionTitle"]}>지금 어디까지 왔는지 보입니다</h2>
+            <p className={styles["sectionSub"]}>
+              막대 하나로 기다리게 두지 않습니다. 네 단계 중 어느 단계인지,
+              그 안에서 몇 개를 처리했는지 그대로 드러냅니다.
+            </p>
+
+            <ul className={styles["showcaseList"]}>
+              <li>
+                <Check size={15} strokeWidth={3} aria-hidden="true" />
+                단계별 진행 상태와 세부 카운트
+              </li>
+              <li>
+                <Check size={15} strokeWidth={3} aria-hidden="true" />
+                처리 중인 항목을 문장으로 안내
+              </li>
+              <li>
+                <Check size={15} strokeWidth={3} aria-hidden="true" />
+                완료된 단계는 초록 체크로 구분
+              </li>
+            </ul>
+          </div>
+
+          <div className={styles["showcaseShot"]}>
+            <div className={styles["phone"]}>
+              <img
+                src="/app-conversion.png"
+                alt="변환 진행 화면 — 네 단계 파이프라인과 진행률이 표시된 모습"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 재생성하는 요소 ── */}
+      <section className={styles["section"]}>
         <div className={styles["sectionInner"]}>
           <span className={styles["kicker"]}>재생성 대상</span>
           <h2 className={styles["sectionTitle"]}>그림을 사진으로 붙이지 않습니다</h2>

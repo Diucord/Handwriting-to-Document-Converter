@@ -1,0 +1,247 @@
+/* 히어로 변환 전후 목업 — 왼쪽은 손글씨, 오른쪽은 조판된 문서.
+   양쪽의 성격이 눈에 바로 구분되는 것이 이 컴포넌트의 목적입니다. */
+
+.mock {
+  margin-top: 52px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+}
+
+.col {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 340px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.dotAmber,
+.dotBlue {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex: none;
+}
+.dotAmber { background: #d6a15a; }
+.dotBlue { background: var(--blue); }
+
+/* ── 왼쪽: 노트 ── */
+.paper {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 22px 20px;
+  min-height: 252px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  /* 모눈종이 — 실제 노트처럼 보이게 */
+  background-color: #fdfbf6;
+  background-image:
+    linear-gradient(rgba(180, 168, 142, 0.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(180, 168, 142, 0.16) 1px, transparent 1px);
+  background-size: 22px 22px;
+  border: 1px solid #ece5d8;
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+}
+
+/* 잉크 획 공통 — 끝을 둥글게 해야 펜처럼 보입니다 */
+.paper svg path {
+  fill: none;
+  stroke: #4a5568;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.inkTitle {
+  width: 68%;
+  height: auto;
+  opacity: 0.88;
+}
+.inkTitle path { stroke-width: 2.6; }
+
+.inkLine {
+  height: 13px;
+  opacity: 0.62;
+}
+.inkLine path {
+  stroke-width: 1.9;
+  vector-effect: non-scaling-stroke;
+}
+
+/* 손으로 그린 그래프 */
+.sketch {
+  width: 100%;
+  height: auto;
+  margin: 4px 0;
+  opacity: 0.78;
+}
+.sketch .axis { stroke-width: 1.8; }
+.sketch .bar {
+  stroke-width: 1.7;
+  fill: rgba(74, 85, 104, 0.10);
+}
+
+.inkFormula {
+  width: 74%;
+  height: auto;
+  margin: 2px 0;
+  opacity: 0.8;
+}
+.inkFormula path { stroke-width: 2; }
+
+/* ── 화살표 ── */
+.arrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  color: var(--blue);
+  box-shadow: 0 4px 12px rgba(15, 23, 42, 0.08);
+}
+
+/* ── 오른쪽: 문서 ── */
+.doc {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 20px;
+  min-height: 252px;
+  box-sizing: border-box;
+  border-radius: 16px;
+  background: #ffffff;
+  border: 1px solid var(--line);
+  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.07);
+  text-align: left;
+}
+
+.docTitle {
+  margin: 0 0 9px;
+  font-size: 14.5px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.docText {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.72;
+  color: var(--ink-2);
+  word-break: keep-all;
+}
+
+/* 축과 눈금이 있는 차트 */
+.chart {
+  position: relative;
+  height: 84px;
+  margin: 13px 0;
+  padding-left: 4px;
+}
+
+.chartGrid {
+  position: absolute;
+  inset: 0 0 17px 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.chartGrid span {
+  display: block;
+  height: 1px;
+  background: #eef0f4;
+}
+
+.bars {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  padding: 0 6px;
+}
+
+.barWrap {
+  flex: 1;
+  height: calc(100% - 17px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.barFill {
+  width: 100%;
+  border-radius: 4px 4px 2px 2px;
+  background: linear-gradient(180deg, #4da2ff, var(--blue));
+}
+
+.barLabel {
+  margin-top: 5px;
+  font-size: 9.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+}
+
+/* 조판된 수식 */
+.formula {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  margin: 4px 0 11px;
+  padding: 10px 12px;
+  border-radius: 9px;
+  background: rgba(0, 122, 255, 0.06);
+  color: #1d4ed8;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Times New Roman', Georgia, serif;
+}
+.formula em {
+  font-style: italic;
+  font-weight: 500;
+}
+.fInt {
+  font-size: 20px;
+  line-height: 0.8;
+}
+
+/* ── 반응형 ── */
+@media (max-width: 640px) {
+  .mock {
+    margin-top: 38px;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .col {
+    max-width: 100%;
+    width: 100%;
+  }
+  .arrow { transform: rotate(90deg); }
+  .paper,
+  .doc {
+    min-height: 0;
+    padding: 18px 16px;
+  }
+}
