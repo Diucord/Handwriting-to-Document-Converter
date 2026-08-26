@@ -649,3 +649,73 @@
   .actionButton,
   .historyItem { transition: none; }
 }
+
+/* ── 바텀시트 닫기 ──────────────────────────────────────────────────
+   시트를 여는 방법은 있었는데 닫는 방법이 "문서 변환"을 다시 누르는 것뿐이라
+   눈에 보이지 않았습니다. 세 가지를 모두 둡니다: 배경 탭 · 손잡이 · X 버튼. */
+
+.sheetOverlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.28);
+  z-index: 35;
+  animation: sheetFade 0.22s ease;
+}
+@keyframes sheetFade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* iOS 시트 상단의 손잡이 */
+.sheetGrabber {
+  align-self: center;
+  width: 40px;
+  height: 5px;
+  margin: -8px 0 12px;
+  padding: 0;
+  border: none;
+  border-radius: 999px;
+  background: #d4d7dd;
+  cursor: pointer;
+  flex: none;
+}
+.sheetGrabber:active { background: #bcc0c8; }
+
+.sheetHead {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+/* 제목이 sheetHead 안으로 들어갔으므로 자체 여백은 없앱니다 */
+.sheetHead .actionSheetTitle {
+  margin-bottom: 0;
+  flex: 1;
+  min-width: 0;
+}
+
+.sheetClose {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  flex: none;
+  margin-top: -2px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: var(--bg-sunken);
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.sheetClose:active {
+  background: #e4e7ec;
+  color: var(--ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sheetOverlay { animation: none; }
+  .sheetClose { transition: none; }
+}

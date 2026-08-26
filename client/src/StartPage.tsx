@@ -1,5 +1,5 @@
 import { useRef, useState, useEffect } from "react";
-import { Home, Share2, Camera, FolderOpen, Images, ChevronRight } from "lucide-react";
+import { Home, Share2, Camera, FolderOpen, Images, ChevronRight, X } from "lucide-react";
 import Logo from "./Logo";
 import EmptyState from "./EmptyState";
 import Avatar from "./Avatar";
@@ -294,12 +294,36 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
         </>
       )}
 
+      {/* 시트 밖을 눌러도 닫히게 합니다 (공유 시트와 동일한 방식) */}
+      {showActionSheet && (
+        <div
+          className={styles["sheetOverlay"]}
+          onClick={() => setShowActionSheet(false)}
+        />
+      )}
+
       <div
         className={`${styles.actionSheet} ${showActionSheet ? styles.actionSheetVisible : styles.actionSheetHidden}`}
       >
         <div className={styles.actionButtons}>
-          <div className={styles.actionSheetTitle}>
-            변환할 형식을 선택하세요
+          {/* 손잡이 — 여기를 눌러도 닫힙니다 */}
+          <button
+            className={styles["sheetGrabber"]}
+            onClick={() => setShowActionSheet(false)}
+            aria-label="닫기"
+          />
+
+          <div className={styles["sheetHead"]}>
+            <div className={styles.actionSheetTitle}>
+              변환할 형식을 선택하세요
+            </div>
+            <button
+              className={styles["sheetClose"]}
+              onClick={() => setShowActionSheet(false)}
+              aria-label="닫기"
+            >
+              <X size={18} strokeWidth={2.4} />
+            </button>
           </div>
 
           <div className={styles.formatToggle}>
