@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LandingPage from "./LandingPage";
+import "./appShell.css";
 import StartPage from "./StartPage";
 import ConversionPage from "./ConversionPage";
 import DownloadPage from "./DownloadPage";
@@ -159,16 +160,19 @@ export default function App() {
     return null;
   }
 
-  return (
-    <div className="h-screen">
-      {step === "landing" && (
-        <LandingPage
-          isLoggedIn={!!user}
-          onStart={() => setStep("start")}
-          onGoLogin={() => setStep(user ? "start" : "login")}
-        />
-      )}
+  // 랜딩은 풀와이드라 셸을 씌우지 않습니다.
+  if (step === "landing") {
+    return (
+      <LandingPage
+        isLoggedIn={!!user}
+        onStart={() => setStep("start")}
+        onGoLogin={() => setStep(user ? "start" : "login")}
+      />
+    );
+  }
 
+  return (
+    <div className="app-stage">
       {step === "login" && (
         <LoginPage
           onLogin={async (email, pw) => {

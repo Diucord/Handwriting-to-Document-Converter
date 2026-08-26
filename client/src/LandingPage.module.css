@@ -32,28 +32,6 @@
   gap: 16px;
 }
 
-.brand {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  font-size: 16.5px;
-  font-weight: 800;
-  letter-spacing: -0.02em;
-  color: #111827;
-}
-
-.brandMark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 30px;
-  height: 30px;
-  border-radius: 9px;
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: #ffffff;
-  flex: none;
-}
-
 .topbarNav {
   display: flex;
   align-items: center;
@@ -576,21 +554,43 @@
 }
 
 @media (max-width: 640px) {
-  .hero { padding: 52px 18px 60px; }
-  .section { padding: 56px 18px; }
-  .cta { padding: 62px 18px; }
-  .topbarInner { padding: 12px 16px; }
+  .hero { padding: 46px 18px 56px; }
+  .section { padding: 52px 18px; }
+  .cta { padding: 58px 18px; }
+  .topbarInner { padding: 11px 16px; }
+
+  /* 상단바 — 로고 옆 버튼이 좁은 화면에서 줄바꿈되지 않게 줄입니다 */
+  .ghostBtn { padding: 8px 10px; font-size: 13.5px; }
+  .solidBtn { padding: 8px 13px; font-size: 13.5px; }
 
   .steps,
   .cards { grid-template-columns: 1fr; }
+  .steps, .cards, .reasons { margin-top: 32px; gap: 12px; }
+
+  .step { padding: 22px 18px 20px; }
+  .card { padding: 22px 18px; }
+  .reason { padding: 20px 18px; gap: 12px; }
 
   /* 목업은 좁은 화면에서 위아래로 */
-  .mock { flex-direction: column; gap: 14px; }
+  .mock { margin-top: 38px; flex-direction: column; gap: 12px; }
   .mockCol { max-width: 100%; width: 100%; }
+  .mockCard { min-height: 168px; padding: 18px 16px; }
   .mockArrow { transform: rotate(90deg); }
 
+  .heroActions { margin-top: 26px; width: 100%; }
   .ctaPrimary,
   .ctaGhost { width: 100%; justify-content: center; }
+  .ctaBig { width: 100%; justify-content: center; }
+
+  .heroNote { font-size: 12.5px; }
+  .sectionSub { font-size: 13.5px; }
+}
+
+/* 아주 좁은 화면(360px 이하) — 상단바에서 서비스명을 감춥니다.
+   심볼만 남겨도 식별되고, 버튼이 밀려 깨지는 것을 막습니다. */
+@media (max-width: 380px) {
+  .topbarInner { gap: 8px; }
+  .topbarInner > span > span:last-child { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {

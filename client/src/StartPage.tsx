@@ -1,5 +1,6 @@
 import { useRef, useState, useEffect } from "react";
 import { Home, Share2 } from "lucide-react";
+import Logo from "./Logo";
 import { apiGet, SERVER_BASE_URL } from "./api";
 import type { User } from "./useAuth";
 import styles from "./StartPage.module.css";
@@ -146,7 +147,13 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
   return (
     <div className={styles.appContainer}>
       <div className={styles.header}>
-        <div className={styles.appName}>필기 → 문서</div>
+        <button
+          className={styles.appName}
+          onClick={onGoHome}
+          aria-label="홈으로"
+        >
+          <Logo size={26} />
+        </button>
         <div className={styles.headerRight}>
           <span
             className={styles.loginText}

@@ -22,13 +22,25 @@
   height: 56px;
   display: flex;
   align-items: center;
-  justify-content: center;
+  /* 로고를 좌측 상단으로 — 이전에는 가운데 정렬이었습니다 */
+  justify-content: flex-start;
+  padding: 0 20px;
+  box-sizing: border-box;
 }
+/* 로고 버튼 — 눌러서 랜딩으로 나갑니다 */
 .appName {
-  font-size: 18px;
-  font-weight: bold;
-  color: #000000;
+  display: inline-flex;
+  align-items: center;
+  padding: 4px;
+  margin-left: -4px;
+  border: none;
+  background: transparent;
+  color: #111827;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
 }
+.appName:hover { background-color: #f3f4f6; }
 .headerRight {
   position: absolute;
   right: 24px;

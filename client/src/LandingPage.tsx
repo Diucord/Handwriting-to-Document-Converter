@@ -12,6 +12,7 @@ import {
   ArrowRight,
   Check,
 } from "lucide-react";
+import Logo from "./Logo";
 import styles from "./LandingPage.module.css";
 
 interface Props {
@@ -85,12 +86,7 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
       {/* ── 상단 바 ── */}
       <header className={styles["topbar"]}>
         <div className={styles["topbarInner"]}>
-          <div className={styles["brand"]}>
-            <span className={styles["brandMark"]} aria-hidden="true">
-              <FileText size={17} strokeWidth={2.4} />
-            </span>
-            Notaformat
-          </div>
+          <Logo size={30} />
           <nav className={styles["topbarNav"]}>
             <button className={styles["ghostBtn"]} onClick={onGoLogin}>
               {isLoggedIn ? "내 문서함" : "로그인"}
@@ -263,12 +259,7 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
       </section>
 
       <footer className={styles["footer"]}>
-        <div className={styles["brand"]}>
-          <span className={styles["brandMark"]} aria-hidden="true">
-            <FileText size={15} strokeWidth={2.4} />
-          </span>
-          Notaformat
-        </div>
+        <Logo size={26} />
         <p className={styles["footerNote"]}>손글씨를 구조화된 문서로</p>
       </footer>
     </div>
