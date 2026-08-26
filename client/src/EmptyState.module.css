@@ -6,8 +6,11 @@
   align-items: center;
   justify-content: center;
   gap: 0;
+  width: 100%;
   height: 100%;
-  padding: 0 24px;
+  /* 그림 아래로 문구와 버튼이 이어져 시각적 무게가 아래에 쏠립니다.
+     위쪽에 패딩을 줘 전체 덩어리를 조금 내립니다. */
+  padding: 56px 24px 0;
   box-sizing: border-box;
   text-align: center;
 }
