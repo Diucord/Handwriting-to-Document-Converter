@@ -413,10 +413,10 @@
 }
 
 @media (max-width: 640px) {
-  .hero { padding: 46px 18px 56px; }
-  .section { padding: 52px 18px; }
-  .cta { padding: 58px 18px; }
-  .topbarInner { padding: 11px 16px; }
+  .hero { padding: 46px 22px 56px; }
+  .section { padding: 52px 22px; }
+  .cta { padding: 58px 22px; }
+  .topbarInner { padding: 11px 20px; }
 
   /* 상단바 — 로고 옆 버튼이 좁은 화면에서 줄바꿈되지 않게 줄입니다 */
   .ghostBtn { padding: 8px 10px; font-size: 13.5px; }
@@ -668,7 +668,7 @@
 }
 
 @media (max-width: 640px) {
-  .dark { padding: 58px 18px; }
+  .dark { padding: 58px 22px; }
   .compare { margin-top: 32px; gap: 12px; }
   .compareCard { padding: 24px 20px; }
   .compareTitle { font-size: 19px; }
