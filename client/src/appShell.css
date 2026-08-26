@@ -1,66 +1,104 @@
 /* 앱 화면 공통 셸 (전역 CSS — CSS Module 아님)
  *
- * 기존 화면은 전부 .appContainer 가 height:100vh + overflow:hidden 이라
- * 화면이 뷰포트 위아래에 딱 붙어 답답했습니다. 여기서 그 값을 덮어
- * 데스크톱에서는 위아래 여백을 주고 카드처럼 띄웁니다.
+ * 기존 화면 7개는 전부 .appContainer 가 height:100vh + overflow:hidden 입니다.
+ * 여기에는 문제가 둘 있어 이 파일에서 함께 덮습니다.
  *
- * 각 모듈 CSS 를 개별 수정하지 않고 전역에서 한 번에 덮는 이유는,
- * 화면이 7개라 규칙이 흩어지면 다음에 또 어긋나기 때문입니다.
+ *  1. 뷰포트에 딱 붙어 답답합니다 (데스크톱)
+ *  2. 모바일에서 잘립니다. 100vh 는 주소창이 없다고 가정한 높이라
+ *     실제 보이는 영역보다 크고, overflow:hidden 이라 넘친 부분은
+ *     스크롤조차 되지 않습니다. 세로가 짧은 기기(iPhone SE 667px)에서
+ *     하단 버튼이 통째로 사라집니다.
+ *
+ * 모듈 CSS 를 7곳 개별 수정하지 않고 전역에서 덮는 이유는, 규칙이 흩어지면
+ * 다음에 화면을 추가할 때 또 어긋나기 때문입니다.
  */
 
-/* 앱 화면을 감싸는 무대 — 회색 배경 위에 카드가 뜹니다 */
+/* 앱 화면을 감싸는 무대 */
 .app-stage {
-  min-height: 100vh;
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px 16px;
   box-sizing: border-box;
   background: #f4f6f9;
+
+  /* dvh = 주소창을 뺀 실제 보이는 높이. 지원하지 않는 구형 브라우저를 위해
+     vh 를 먼저 두고 dvh 로 덮습니다. */
+  min-height: 100vh;
+  min-height: 100dvh;
+  padding: 32px 16px;
 }
 
-/* .appContainer 는 각 모듈에서 해시가 붙지만, 속성 선택자로 잡습니다.
-   (CSS Modules 는 클래스명을 StartPage_appContainer__xxxx 형태로 바꿉니다) */
+/* CSS Modules 는 클래스명을 _appContainer_hash_n 으로 바꾸므로
+   속성 선택자로 잡습니다. */
 .app-stage > div[class*="appContainer"] {
-  height: auto;
-  min-height: 720px;
-  max-height: calc(100vh - 64px);
+  /* 내부 요소가 position:absolute 라 auto 면 높이가 0 이 됩니다.
+     명시적인 높이를 줘야 합니다. */
+  height: 720px;
+  max-height: calc(100dvh - 64px);
   border-radius: 22px;
   box-shadow:
     0 1px 2px rgba(15, 23, 42, 0.06),
     0 12px 40px rgba(15, 23, 42, 0.12);
-  overflow: hidden;
+
+  /* 내용이 넘치면 자르지 않고 스크롤합니다.
+     원래는 hidden 이라 작은 화면에서 잘린 부분에 접근할 수 없었습니다. */
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
 }
 
 /* 화면이 낮으면 카드 최소 높이를 포기하고 뷰포트에 맞춥니다.
-   (min-height 720px 를 두면 노트북에서 아래가 잘립니다) */
+   min-height:720px 를 유지하면 노트북에서 아래가 잘립니다. */
 @media (max-height: 800px) {
   .app-stage {
     padding: 16px;
   }
   .app-stage > div[class*="appContainer"] {
+    /* height:auto 로 두면 안 됩니다. 화면 내부 요소가 대부분
+       position:absolute 라 높이에 기여하지 않아 박스가 0 으로 접힙니다.
+       (실제로 1280x720 에서 화면이 통째로 비었습니다) */
+    height: calc(100dvh - 32px);
     min-height: 0;
-    height: calc(100vh - 32px);
     max-height: none;
   }
 }
 
-/* 모바일 — 카드 연출을 걷어내고 화면을 꽉 채웁니다.
-   좁은 화면에서 여백과 그림자는 공간만 낭비합니다. */
+/* ── 모바일 ──
+   카드 연출을 걷어내고 화면을 채웁니다. 좁은 화면에서 여백과 그림자는
+   공간만 낭비합니다. */
 @media (max-width: 480px) {
   .app-stage {
     padding: 0;
     background: #ffffff;
     align-items: stretch;
   }
+
   .app-stage > div[class*="appContainer"] {
     width: 100% !important;
     max-width: 100%;
-    min-height: 100vh;
-    height: 100vh;
-    max-height: none;
     border-radius: 0;
     box-shadow: none;
+
+    /* dvh 는 주소창을 뺀 실제 보이는 높이입니다. 넘치는 내용은
+       위에서 준 overflow-y:auto 로 스크롤됩니다. */
+    height: 100vh;
+    height: 100dvh;
+    min-height: 0;
+    max-height: none;
+
+    /* 노치·홈바를 피합니다. viewport-fit=cover 와 함께 동작합니다. */
+    padding-bottom: env(safe-area-inset-bottom);
+    box-sizing: border-box;
+  }
+}
+
+/* 하단 고정 요소(네비바 등)가 홈 인디케이터에 가리지 않게 합니다.
+   .navBar 는 StartPage 모듈이라 해시가 붙으므로 속성 선택자로 잡습니다. */
+@media (max-width: 480px) {
+  div[class*="navBar"] {
+    padding-bottom: env(safe-area-inset-bottom) !important;
+    height: auto !important;
+    min-height: 60px;
   }
 }

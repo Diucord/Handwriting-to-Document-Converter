@@ -113,7 +113,7 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
           </h1>
 
           <p className={styles["heroSub"]}>
-            사진을 올리면 네 단계 에이전트가 글과 그림을 나눠 읽고,
+            사진을 올리면 네 단계 에이전트가 글과 그림을 나눠 읽고,{" "}
             <br className={styles["brDesktop"]} />
             수식·다이어그램·차트를 다시 그려 PDF 로 만듭니다.
           </p>

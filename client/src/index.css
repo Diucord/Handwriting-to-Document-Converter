@@ -16,7 +16,8 @@ html, body, #root {
   font-family: 'Noto Sans KR', sans-serif;
 }
 
-/* 앱 화면(393px 고정)은 뷰포트 높이를 채우고, 랜딩은 내용만큼 늘어납니다. */
+/* 랜딩은 내용만큼 늘어납니다. dvh 는 모바일 주소창을 반영한 실제 높이입니다. */
 .h-screen {
   min-height: 100vh;
+  min-height: 100dvh;
 }
