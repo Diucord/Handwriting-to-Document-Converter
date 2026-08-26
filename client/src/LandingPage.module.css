@@ -318,65 +318,11 @@
 }
 
 /* ── 4단계 ── */
-.steps {
-  list-style: none;
-  margin: 44px 0 0;
-  padding: 0;
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
 
-.step {
-  position: relative;
-  padding: 26px 20px 24px;
-  border-radius: 18px;
-  background: #ffffff;
-  border: 1px solid var(--line);
-  text-align: left;
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
-.step:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 12px 28px rgba(15, 23, 42, 0.08);
-}
 
-.stepNum {
-  position: absolute;
-  top: 16px;
-  right: 18px;
-  font-size: 25px;
-  font-weight: 800;
-  color: #f1f3f7;
-  line-height: 1;
-}
 
-.stepIcon {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 11px;
-  background: rgba(0, 122, 255, 0.08);
-  color: var(--blue);
-}
 
-.stepLabel {
-  margin: 15px 0 0;
-  font-size: 15.5px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: #111827;
-}
 
-.stepDesc {
-  margin: 7px 0 0;
-  font-size: 13px;
-  line-height: 1.65;
-  color: #6b7280;
-  word-break: keep-all;
-}
 
 /* ── 재생성 대상 카드 ── */
 .cards {
@@ -601,4 +547,236 @@
   .step:hover, .card:hover, .ctaPrimary:hover,
   .ctaBig:hover, .solidBtn:hover { transform: none; }
   .ctaPrimary:hover svg, .ctaBig:hover svg { transform: none; }
+}
+
+
+/* ── Before / After 대비 (레퍼런스의 기존/해결 카드) ── */
+.compare {
+  margin-top: 44px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 18px;
+  text-align: left;
+}
+
+.compareCard {
+  padding: 30px 28px;
+  border-radius: var(--r-card);
+}
+
+/* 기존 방식 — 가라앉은 회색 */
+.compareBad {
+  background: #f4f5f7;
+  border: 1px solid var(--line);
+}
+
+/* Notaformat — 파란 면으로 눈이 먼저 가게 */
+.compareGood {
+  background: linear-gradient(160deg, #0a84ff 0%, var(--blue) 45%, #0060df 100%);
+  box-shadow: 0 14px 36px rgba(0, 122, 255, 0.26);
+}
+
+.compareChip {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.compareBad .compareChip {
+  background: #e6e8ec;
+  color: var(--ink-2);
+}
+.compareGood .compareChip {
+  background: rgba(255, 255, 255, 0.22);
+  color: #ffffff;
+}
+
+.compareTitle {
+  margin: 14px 0 0;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+}
+.compareGood .compareTitle { color: #ffffff; }
+
+.compareList {
+  list-style: none;
+  margin: 20px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+.compareList li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  word-break: keep-all;
+}
+.compareList svg { flex: none; margin-top: 2px; }
+.compareBad .compareList li { color: var(--ink-2); }
+.compareBad .compareList svg { color: #b6bac2; }
+.compareGood .compareList li { color: rgba(255, 255, 255, 0.94); }
+.compareGood .compareList svg { color: #ffffff; }
+
+/* ── 진한 파란 풀블리드 섹션 ── */
+.dark {
+  padding: 84px 24px;
+  background:
+    radial-gradient(80% 120% at 10% 0%, #1e4fd8 0%, rgba(30, 79, 216, 0) 60%),
+    linear-gradient(135deg, #0b2fa8 0%, #123fc4 50%, #0a2a92 100%);
+}
+.kickerOnDark { color: #8ab4ff; }
+.onDark { color: #ffffff; }
+.onDarkSub { color: rgba(255, 255, 255, 0.78); }
+
+/* 3단계 — 화살표로 연결 */
+.flow {
+  list-style: none;
+  margin: 46px 0 0;
+  padding: 0;
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+}
+.flowItem {
+  display: flex;
+  align-items: center;
+  flex: 1 1 0;
+  min-width: 0;
+}
+.flowCard {
+  flex: 1;
+  min-width: 0;
+  padding: 28px 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  text-align: center;
+}
+.flowIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.16);
+  color: #ffffff;
+}
+.flowLabel {
+  margin: 15px 0 0;
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #ffffff;
+}
+.flowDesc {
+  margin: 8px 0 0;
+  font-size: 13px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.74);
+  word-break: keep-all;
+}
+.flowArrow {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ── 좌우 교차 행 (파이프라인 4단계) ── */
+.rows {
+  margin-top: 46px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.row {
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  padding: 26px 30px;
+  border-radius: var(--r-card);
+  background: var(--bg-card);
+  border: 1px solid var(--line);
+  text-align: left;
+}
+/* 짝수 행은 좌우를 뒤집습니다 */
+.row:nth-child(even) { flex-direction: row-reverse; }
+
+.rowText { flex: 1; min-width: 0; }
+.rowNum {
+  display: inline-block;
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  color: var(--blue);
+}
+.rowTitle {
+  margin: 9px 0 0;
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+.rowDesc {
+  margin: 8px 0 0;
+  font-size: 14.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  word-break: keep-all;
+}
+.rowVisual { flex: none; }
+.rowIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 82px;
+  height: 82px;
+  border-radius: 20px;
+  background: rgba(0, 122, 255, 0.08);
+  color: var(--blue);
+}
+
+/* ── 반응형 ── */
+@media (max-width: 900px) {
+  .compare { grid-template-columns: 1fr; }
+  /* 3단계는 세로로 쌓고 화살표를 아래로 돌립니다 */
+  .flow { flex-direction: column; gap: 0; }
+  .flowItem { flex-direction: column; width: 100%; }
+  .flowCard { width: 100%; box-sizing: border-box; }
+  .flowArrow { width: auto; height: 40px; transform: rotate(90deg); }
+}
+
+@media (max-width: 640px) {
+  .dark { padding: 58px 18px; }
+  .compare { margin-top: 32px; gap: 12px; }
+  .compareCard { padding: 24px 20px; }
+  .compareTitle { font-size: 19px; }
+  .compareList li { font-size: 13.5px; }
+
+  .rows { margin-top: 32px; gap: 12px; }
+  .row,
+  .row:nth-child(even) {
+    flex-direction: row;
+    gap: 16px;
+    padding: 20px 18px;
+  }
+  .rowTitle { font-size: 17px; }
+  .rowDesc { font-size: 13.5px; }
+  .rowIcon { width: 58px; height: 58px; border-radius: 16px; }
+  .rowIcon svg { width: 24px; height: 24px; }
+
+  .flow { margin-top: 32px; }
 }

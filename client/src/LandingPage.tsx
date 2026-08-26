@@ -11,6 +11,10 @@ import {
   Image as ImageIcon,
   ArrowRight,
   Check,
+  X,
+  Upload,
+  Wand2,
+  Download,
 } from "lucide-react";
 import Logo from "./Logo";
 import styles from "./LandingPage.module.css";
@@ -31,6 +35,28 @@ interface Props {
  * 처음 들어온 사람에게 무엇을 하는 서비스인지 먼저 설명하고
  * 체험하기로 앱에 진입시키는 역할이라, 앱 화면과 폭 규칙이 다릅니다.
  */
+
+/* 기존 방식의 한계 → Notaformat 의 해결 (레퍼런스의 Before/After 대비 카드) */
+const BEFORE = [
+  "손글씨는 검색도 편집도 되지 않습니다",
+  "그림과 수식은 사진으로 오려 붙입니다",
+  "표와 차트는 처음부터 다시 그려야 합니다",
+  "정리하는 데만 한 시간이 넘게 걸립니다",
+];
+
+const AFTER = [
+  "글은 선택·검색 가능한 텍스트로 남습니다",
+  "수식·다이어그램은 코드로 복원합니다",
+  "차트는 축과 눈금까지 다시 그립니다",
+  "사진을 올리면 나머지는 자동입니다",
+];
+
+/* 진한 파란 면에 놓이는 3단계 (레퍼런스의 화살표 연결 구조) */
+const STEPS = [
+  { icon: Upload, label: "사진 올리기", desc: "휴대폰으로 찍은 노트를 그대로 올립니다" },
+  { icon: Wand2, label: "에이전트 처리", desc: "네 단계로 나눠 읽고 다시 그립니다" },
+  { icon: Download, label: "문서 받기", desc: "완성된 PDF 를 내려받습니다" },
+] as const;
 
 const PIPELINE = [
   {
@@ -166,6 +192,80 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
         </div>
       </section>
 
+      {/* ── Before / After 대비 ── */}
+      <section className={styles["section"]}>
+        <div className={styles["sectionInner"]}>
+          <span className={styles["kicker"]}>왜 필요한가</span>
+          <h2 className={styles["sectionTitle"]}>필기를 옮겨 적는 시간이 사라집니다</h2>
+
+          <div className={styles["compare"]}>
+            <div className={`${styles["compareCard"]} ${styles["compareBad"]}`}>
+              <span className={styles["compareChip"]}>기존 방식</span>
+              <h3 className={styles["compareTitle"]}>직접 옮겨 적기</h3>
+              <ul className={styles["compareList"]}>
+                {BEFORE.map((t) => (
+                  <li key={t}>
+                    <X size={15} strokeWidth={3} aria-hidden="true" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className={`${styles["compareCard"]} ${styles["compareGood"]}`}>
+              <span className={styles["compareChip"]}>Notaformat</span>
+              <h3 className={styles["compareTitle"]}>사진 한 장이면 끝</h3>
+              <ul className={styles["compareList"]}>
+                {AFTER.map((t) => (
+                  <li key={t}>
+                    <Check size={15} strokeWidth={3} aria-hidden="true" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── 진한 파란 면 — 3단계.
+           흰 면만 이어지면 스크롤이 단조로워 중간에 호흡을 끊습니다. ── */}
+      <section className={styles["dark"]}>
+        <div className={styles["sectionInner"]}>
+          <span className={`${styles["kicker"]} ${styles["kickerOnDark"]}`}>
+            시작하는 법
+          </span>
+          <h2 className={`${styles["sectionTitle"]} ${styles["onDark"]}`}>
+            세 단계로 시작합니다
+          </h2>
+          <p className={`${styles["sectionSub"]} ${styles["onDarkSub"]}`}>
+            설치할 것도, 배울 것도 없습니다. 사진만 준비하면 됩니다.
+          </p>
+
+          <ol className={styles["flow"]}>
+            {STEPS.map((s, i) => {
+              const Icon = s.icon;
+              return (
+                <li key={s.label} className={styles["flowItem"]}>
+                  <div className={styles["flowCard"]}>
+                    <span className={styles["flowIcon"]} aria-hidden="true">
+                      <Icon size={22} strokeWidth={2} />
+                    </span>
+                    <h3 className={styles["flowLabel"]}>{s.label}</h3>
+                    <p className={styles["flowDesc"]}>{s.desc}</p>
+                  </div>
+                  {i < STEPS.length - 1 && (
+                    <span className={styles["flowArrow"]} aria-hidden="true">
+                      <ArrowRight size={20} strokeWidth={2.5} />
+                    </span>
+                  )}
+                </li>
+              );
+            })}
+          </ol>
+        </div>
+      </section>
+
       {/* ── 파이프라인 4단계 ── */}
       <section className={styles["section"]}>
         <div className={styles["sectionInner"]}>
@@ -175,21 +275,26 @@ export default function LandingPage({ onStart, onGoLogin, isLoggedIn }: Props) {
             한 번에 통째로 읽지 않고, 역할이 다른 에이전트가 순서대로 처리합니다.
           </p>
 
-          <ol className={styles["steps"]}>
+          {/* 좌우 교차 배치 — 카드 나열보다 읽는 순서가 분명합니다 */}
+          <div className={styles["rows"]}>
             {PIPELINE.map((s, i) => {
               const Icon = s.icon;
               return (
-                <li key={s.label} className={styles["step"]}>
-                  <span className={styles["stepNum"]}>{i + 1}</span>
-                  <span className={styles["stepIcon"]} aria-hidden="true">
-                    <Icon size={21} strokeWidth={2} />
-                  </span>
-                  <h3 className={styles["stepLabel"]}>{s.label}</h3>
-                  <p className={styles["stepDesc"]}>{s.desc}</p>
-                </li>
+                <div key={s.label} className={styles["row"]}>
+                  <div className={styles["rowText"]}>
+                    <span className={styles["rowNum"]}>STEP {i + 1}</span>
+                    <h3 className={styles["rowTitle"]}>{s.label}</h3>
+                    <p className={styles["rowDesc"]}>{s.desc}</p>
+                  </div>
+                  <div className={styles["rowVisual"]} aria-hidden="true">
+                    <span className={styles["rowIcon"]}>
+                      <Icon size={32} strokeWidth={1.7} />
+                    </span>
+                  </div>
+                </div>
               );
             })}
-          </ol>
+          </div>
         </div>
       </section>
 
