@@ -1,6 +1,7 @@
 import { useRef, useState, useEffect } from "react";
 import { Home, Share2, Camera, FolderOpen, Images, ChevronRight } from "lucide-react";
 import Logo from "./Logo";
+import EmptyState from "./EmptyState";
 import { apiGet, SERVER_BASE_URL } from "./api";
 import type { User } from "./useAuth";
 import styles from "./StartPage.module.css";
@@ -247,9 +248,10 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
             </div>
           ) : (
             <div className={styles.message}>
-              해당 기간의 변환 기록이
-              <br />
-              없습니다
+              <EmptyState
+                title="해당 기간의 변환 기록이 없습니다"
+                desc="날짜를 바꾸거나 새 문서를 변환해 보세요."
+              />
             </div>
           )}
         </>
@@ -283,11 +285,12 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
             </div>
           ) : (
             <div className={styles.message}>
-              변환 기록이 없습니다
-              <br />
-              <span style={{ fontSize: "12px", color: "#9ca3af" }}>
-                로그인하면 기록이 영구 보관됩니다
-              </span>
+              <EmptyState
+                title="아직 변환한 문서가 없습니다"
+                desc={"손글씨 노트를 올리면 구조화된 문서로 만들어 드립니다.\n로그인하면 기록이 영구 보관됩니다."}
+                actionLabel="로그인하기"
+                onAction={onGoLogin}
+              />
             </div>
           )}
         </>

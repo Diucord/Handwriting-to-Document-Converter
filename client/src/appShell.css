@@ -97,7 +97,9 @@
    .navBar 는 StartPage 모듈이라 해시가 붙으므로 속성 선택자로 잡습니다. */
 @media (max-width: 480px) {
   div[class*="navBar"] {
-    padding-bottom: env(safe-area-inset-bottom) !important;
+    /* env() 만 쓰면 홈 인디케이터가 없는 기기에서 0 으로 풀려 바닥에
+       딱 붙습니다. 기본 여백을 먼저 두고 그 위에 safe-area 를 더합니다. */
+    padding-bottom: calc(22px + env(safe-area-inset-bottom)) !important;
     height: auto !important;
     min-height: 60px;
   }

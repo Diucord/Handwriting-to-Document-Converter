@@ -167,18 +167,8 @@
   left: 20px;
   right: 20px;
   bottom: 210px;
+  /* 안쪽 EmptyState 가 자체 정렬을 하므로 여기서는 자리만 잡습니다 */
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 6px;
-  /* 빈 상태는 흰 카드로 감싸지 않습니다. 내용이 없는데 큰 면만 남아
-     화면이 비어 보였습니다. */
-  font-size: 14.5px;
-  font-weight: 500;
-  color: var(--ink-3);
-  text-align: center;
-  line-height: 1.6;
 }
 
 /* 문서 정리 내역 컨테이너 */
@@ -265,7 +255,7 @@
   left: 0;
   right: 0;
   width: 100%;
-  padding: 22px 20px calc(20px + env(safe-area-inset-bottom));
+  padding: 22px 20px calc(26px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   max-height: calc(100% - 80px);
   overflow-y: auto;
@@ -385,7 +375,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 12px 20px calc(18px + env(safe-area-inset-bottom));
+  padding: 12px 20px calc(22px + env(safe-area-inset-bottom));
   box-sizing: border-box;
   background: var(--bg-card);
   border-top: 1px solid var(--line);
