@@ -22,7 +22,7 @@ from agents.orchestrator_agent import (
 from database import Base, engine, get_db
 from models import ConversionHistory
 from auth import get_optional_user, User as AuthUser
-from routers import auth as auth_router, history as history_router
+from routers import auth as auth_router, history as history_router, share as share_router
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
@@ -42,6 +42,7 @@ app.add_middleware(
 
 app.include_router(auth_router.router)
 app.include_router(history_router.router)
+app.include_router(share_router.router)
 
 _CONVERTED_DIR = os.path.join(os.path.dirname(__file__), "converted")
 os.makedirs(_CONVERTED_DIR, exist_ok=True)

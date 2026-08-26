@@ -3,7 +3,7 @@ import { Home, Share2, Camera, FolderOpen, Images, ChevronRight, X } from "lucid
 import Logo from "./Logo";
 import EmptyState from "./EmptyState";
 import Avatar from "./Avatar";
-import { apiGet, SERVER_BASE_URL } from "./api";
+import { apiGet, apiFetch, SERVER_BASE_URL } from "./api";
 import type { User } from "./useAuth";
 import styles from "./StartPage.module.css";
 
@@ -15,6 +15,17 @@ interface HistoryItem {
   file_type: string;
   file_url: string;
   created_at: string;
+}
+
+interface SharedItem {
+  token: string;
+  title: string;
+  file_type: string;
+  expires_at: string | null;
+  max_downloads: number | null;
+  download_count: number;
+  has_password: boolean;
+  revoked: boolean;
 }
 
 interface Props {
@@ -36,6 +47,10 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
   const [exportFormat, setExportFormat] = useState<ExportFormat>("pdf");
   const [history, setHistory] = useState<HistoryItem[]>([]);
   const [filterMode, setFilterMode] = useState<"daily" | "monthly">("monthly");
+  // 탭 — 내 문서 / 공유 문서
+  const [tab, setTab] = useState<"mine" | "shared">("mine");
+  const [shares, setShares] = useState<SharedItem[]>([]);
+  const [shareBusy, setShareBusy] = useState<number | null>(null);
   const [selectedDate, setSelectedDate] = useState(() => {
     const now = new Date();
     return now.toISOString().split("T")[0];
@@ -69,6 +84,61 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
       .then((data) => setHistory(data))
       .catch(() => setHistory([]));
   }, [user, filterMode, selectedDate, selectedMonth]);
+
+  // 공유 목록 — 탭을 열 때만 부릅니다
+  useEffect(() => {
+    if (!user || tab !== "shared") return;
+    apiGet("/api/share/")
+      .then((res) => (res.ok ? res.json() : Promise.reject()))
+      .then(setShares)
+      .catch(() => setShares([]));
+  }, [user, tab]);
+
+  const handleShareDocument = async (item: HistoryItem) => {
+    if (!user) {
+      onGoLogin();
+      return;
+    }
+    setShareBusy(item.id);
+    try {
+      const res = await apiFetch("/api/share/", {
+        method: "POST",
+        body: JSON.stringify({ history_id: item.id, expires_in_days: 7 }),
+      });
+      if (!res.ok) throw new Error("공유 링크를 만들지 못했습니다.");
+      const data = await res.json();
+      const url = `${window.location.origin}/s/${data.token}`;
+      try {
+        await navigator.clipboard.writeText(url);
+      } catch {
+        /* 클립보드가 막힌 환경 — 링크는 공유 문서 탭에서 다시 볼 수 있습니다 */
+      }
+      setCopyToast(true);
+      setTimeout(() => setCopyToast(false), 2000);
+      setTab("shared");
+    } catch (e) {
+      alert(e instanceof Error ? e.message : "공유에 실패했습니다.");
+    } finally {
+      setShareBusy(null);
+    }
+  };
+
+  const handleCopyShareLink = async (token: string) => {
+    const url = `${window.location.origin}/s/${token}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopyToast(true);
+      setTimeout(() => setCopyToast(false), 2000);
+    } catch {
+      window.prompt("링크를 복사하세요", url);
+    }
+  };
+
+  const handleRevokeShare = async (token: string) => {
+    if (!window.confirm("공유를 해제하면 링크가 즉시 동작하지 않습니다. 해제할까요?")) return;
+    const res = await apiFetch(`/api/share/${token}`, { method: "DELETE" });
+    if (res.ok) setShares((prev) => prev.filter((x) => x.token !== token));
+  };
 
   const handleSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
@@ -147,24 +217,24 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
   };
 
   return (
-    <div className={styles.appContainer}>
-      <div className={styles.header}>
+    <div className={styles["appContainer"]}>
+      <div className={styles["header"]}>
         <button
-          className={styles.appName}
+          className={styles["appName"]}
           onClick={onGoHome}
           aria-label="홈으로"
         >
           <Logo size={26} />
         </button>
-        <div className={styles.headerRight}>
+        <div className={styles["headerRight"]}>
           <span
-            className={styles.loginText}
+            className={styles["loginText"]}
             onClick={user ? undefined : onGoLogin}
           >
             {user ? user.nickname : "로그인하기"}
           </span>
           <button
-            className={styles.profileImage}
+            className={styles["profileImage"]}
             onClick={user ? onGoProfile : onGoLogin}
             aria-label={user ? "내 프로필" : "로그인"}
           >
@@ -173,41 +243,104 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
         </div>
       </div>
 
-      <div className={styles.tabs}>
-        <div className={styles.tabActive}>내 문서</div>
-        <button className={styles.tabInactive}>공유 문서</button>
+      <div className={styles["tabs"]}>
+        <button
+          className={tab === "mine" ? styles["tabActive"] : styles["tabInactive"]}
+          onClick={() => setTab("mine")}
+        >
+          내 문서
+        </button>
+        <button
+          className={tab === "shared" ? styles["tabActive"] : styles["tabInactive"]}
+          onClick={() => setTab("shared")}
+        >
+          공유 문서
+        </button>
       </div>
 
-      {user ? (
+      {tab === "shared" ? (
+        shares.length > 0 ? (
+          <div className={styles["historyContent"]}>
+            <div className={styles["historyList"]}>
+              {shares.map((sh) => (
+                <div key={sh.token} className={styles["historyItem"]}>
+                  <div className={styles["historyLeft"]}>
+                    <div className={styles["historyTitle"]}>{sh.title}</div>
+                    <div className={styles["shareMeta"]}>
+                      {sh.has_password && <span>비밀번호</span>}
+                      <span>
+                        {sh.expires_at
+                          ? `${new Date(sh.expires_at).toLocaleDateString("ko-KR")} 만료`
+                          : "무기한"}
+                      </span>
+                      <span>
+                        {sh.max_downloads
+                          ? `${sh.download_count}/${sh.max_downloads}회`
+                          : `${sh.download_count}회 열림`}
+                      </span>
+                    </div>
+                  </div>
+                  <div className={styles["shareActions"]}>
+                    <button
+                      className={styles["shareBtn"]}
+                      onClick={() => handleCopyShareLink(sh.token)}
+                    >
+                      링크 복사
+                    </button>
+                    <button
+                      className={`${styles["shareBtn"]} ${styles["shareBtnDanger"]}`}
+                      onClick={() => handleRevokeShare(sh.token)}
+                    >
+                      해제
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div className={styles["message"]}>
+            <EmptyState
+              title={user ? "공유한 문서가 없습니다" : "로그인이 필요합니다"}
+              desc={
+                user
+                  ? "내 문서에서 공유 버튼을 누르면 링크가 만들어집니다."
+                  : "문서를 공유하려면 로그인해 주세요."
+              }
+              {...(user ? {} : { actionLabel: "로그인하기", onAction: onGoLogin })}
+            />
+          </div>
+        )
+      ) : user ? (
         <>
           {/* 날짜 필터 */}
-          <div className={styles.filterBar}>
-            <div className={styles.filterToggle}>
+          <div className={styles["filterBar"]}>
+            <div className={styles["filterToggle"]}>
               <button
-                className={`${styles.filterButton} ${filterMode === "daily" ? styles.filterButtonActive : ""}`}
+                className={`${styles["filterButton"]} ${filterMode === "daily" ? styles["filterButtonActive"] : ""}`}
                 onClick={() => setFilterMode("daily")}
               >
                 일별
               </button>
               <button
-                className={`${styles.filterButton} ${filterMode === "monthly" ? styles.filterButtonActive : ""}`}
+                className={`${styles["filterButton"]} ${filterMode === "monthly" ? styles["filterButtonActive"] : ""}`}
                 onClick={() => setFilterMode("monthly")}
               >
                 월별
               </button>
             </div>
-            <div className={styles.dateSelector}>
+            <div className={styles["dateSelector"]}>
               {filterMode === "daily" ? (
                 <input
                   type="date"
-                  className={styles.dateInput}
+                  className={styles["dateInput"]}
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                 />
               ) : (
                 <input
                   type="month"
-                  className={styles.dateInput}
+                  className={styles["dateInput"]}
                   value={selectedMonth}
                   onChange={(e) => setSelectedMonth(e.target.value)}
                 />
@@ -217,8 +350,8 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
 
           {/* 이력 목록 (DB + 세션 기록 합산) */}
           {(history.length > 0 || sessionHistory.length > 0) ? (
-            <div className={styles.historyContent}>
-              <div className={styles.historyList}>
+            <div className={styles["historyContent"]}>
+              <div className={styles["historyList"]}>
                 {[...sessionHistory, ...history]
                   .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
                   .map((item) => {
@@ -226,18 +359,28 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
                   return (
                     <div
                       key={`${item.id}-${item.file_type}`}
-                      className={styles.historyItem}
+                      className={styles["historyItem"]}
                       onClick={() => handleHistoryClick(item)}
                     >
-                      <div className={styles.historyLeft}>
-                        <div className={styles.historyTitle}>{item.title}</div>
-                        <div className={styles.historyFileType}>
+                      <div className={styles["historyLeft"]}>
+                        <div className={styles["historyTitle"]}>{item.title}</div>
+                        <div className={styles["historyFileType"]}>
                           {item.file_type.toUpperCase()}
                         </div>
                       </div>
-                      <div className={styles.historyRight}>
-                        <div className={styles.historyDate}>{date}</div>
-                        <div className={styles.historyTime}>{time}</div>
+                      <div className={styles["historyRight"]}>
+                        <div className={styles["historyDate"]}>{date}</div>
+                        <div className={styles["historyTime"]}>{time}</div>
+                        <button
+                          className={styles["rowShare"]}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleShareDocument(item);
+                          }}
+                          disabled={shareBusy === item.id}
+                        >
+                          {shareBusy === item.id ? "생성 중" : "공유"}
+                        </button>
                       </div>
                     </div>
                   );
@@ -245,7 +388,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
               </div>
             </div>
           ) : (
-            <div className={styles.message}>
+            <div className={styles["message"]}>
               <EmptyState
                 title="해당 기간의 변환 기록이 없습니다"
                 desc="날짜를 바꾸거나 새 문서를 변환해 보세요."
@@ -256,25 +399,25 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
       ) : (
         <>
           {sessionHistory.length > 0 ? (
-            <div className={styles.historyContent}>
-              <div className={styles.historyList}>
+            <div className={styles["historyContent"]}>
+              <div className={styles["historyList"]}>
                 {sessionHistory.map((item) => {
                   const { date, time } = formatDateTime(item.created_at);
                   return (
                     <div
                       key={item.id}
-                      className={styles.historyItem}
+                      className={styles["historyItem"]}
                       onClick={() => handleHistoryClick(item)}
                     >
-                      <div className={styles.historyLeft}>
-                        <div className={styles.historyTitle}>{item.title}</div>
-                        <div className={styles.historyFileType}>
+                      <div className={styles["historyLeft"]}>
+                        <div className={styles["historyTitle"]}>{item.title}</div>
+                        <div className={styles["historyFileType"]}>
                           {item.file_type.toUpperCase()}
                         </div>
                       </div>
-                      <div className={styles.historyRight}>
-                        <div className={styles.historyDate}>{date}</div>
-                        <div className={styles.historyTime}>{time}</div>
+                      <div className={styles["historyRight"]}>
+                        <div className={styles["historyDate"]}>{date}</div>
+                        <div className={styles["historyTime"]}>{time}</div>
                       </div>
                     </div>
                   );
@@ -282,7 +425,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
               </div>
             </div>
           ) : (
-            <div className={styles.message}>
+            <div className={styles["message"]}>
               <EmptyState
                 title="아직 변환한 문서가 없습니다"
                 desc={"손글씨 노트를 올리면 구조화된 문서로 만들어 드립니다.\n로그인하면 기록이 영구 보관됩니다."}
@@ -303,9 +446,9 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
       )}
 
       <div
-        className={`${styles.actionSheet} ${showActionSheet ? styles.actionSheetVisible : styles.actionSheetHidden}`}
+        className={`${styles["actionSheet"]} ${showActionSheet ? styles["actionSheetVisible"] : styles["actionSheetHidden"]}`}
       >
-        <div className={styles.actionButtons}>
+        <div className={styles["actionButtons"]}>
           {/* 손잡이 — 여기를 눌러도 닫힙니다 */}
           <button
             className={styles["sheetGrabber"]}
@@ -314,7 +457,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
           />
 
           <div className={styles["sheetHead"]}>
-            <div className={styles.actionSheetTitle}>
+            <div className={styles["actionSheetTitle"]}>
               변환할 형식을 선택하세요
             </div>
             <button
@@ -326,28 +469,28 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
             </button>
           </div>
 
-          <div className={styles.formatToggle}>
+          <div className={styles["formatToggle"]}>
             <button
-              className={`${styles.formatButton} ${exportFormat === "pdf" ? styles.formatButtonActive : ""}`}
+              className={`${styles["formatButton"]} ${exportFormat === "pdf" ? styles["formatButtonActive"] : ""}`}
               onClick={() => setExportFormat("pdf")}
             >
               PDF
             </button>
             <button
-              className={`${styles.formatButton} ${exportFormat === "word" ? styles.formatButtonActive : ""}`}
+              className={`${styles["formatButton"]} ${exportFormat === "word" ? styles["formatButtonActive"] : ""}`}
               onClick={() => setExportFormat("word")}
             >
               Word
             </button>
           </div>
 
-          <div className={styles.actionSheetSubtitle}>
+          <div className={styles["actionSheetSubtitle"]}>
             문서를 가져올 경로를 선택하세요
           </div>
 
           <button
             onClick={handleCameraButtonClick}
-            className={`${styles.actionButton} ${styles.cameraButton}`}
+            className={`${styles["actionButton"]} ${styles["cameraButton"]}`}
           >
             <span className={styles["actionIcon"]} aria-hidden="true">
               <Camera size={19} strokeWidth={2} />
@@ -358,7 +501,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
 
           <button
             onClick={handleFileGalleryClick}
-            className={`${styles.actionButton} ${styles.fileButton}`}
+            className={`${styles["actionButton"]} ${styles["fileButton"]}`}
           >
             <span className={styles["actionIcon"]} aria-hidden="true">
               <FolderOpen size={19} strokeWidth={2} />
@@ -369,7 +512,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
 
           <button
             onClick={handleFileGalleryClick}
-            className={`${styles.actionButton} ${styles.galleryButton}`}
+            className={`${styles["actionButton"]} ${styles["galleryButton"]}`}
           >
             <span className={styles["actionIcon"]} aria-hidden="true">
               <Images size={19} strokeWidth={2} />
@@ -384,7 +527,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
         type="file"
         accept="image/*"
         ref={inputRef}
-        className={styles.inputHidden}
+        className={styles["inputHidden"]}
         multiple
         onChange={handleSelect}
       />
@@ -394,7 +537,7 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
         accept="image/*"
         capture="environment"
         ref={cameraInputRef}
-        className={styles.inputHidden}
+        className={styles["inputHidden"]}
         multiple
         onChange={handleSelect}
       />
@@ -433,24 +576,24 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
         <div className={styles["toast"]}>링크가 복사되었습니다</div>
       )}
 
-      <div className={styles.navBar}>
-        <button className={styles.navButton} onClick={onGoHome} aria-label="홈">
-          <Home size={21} strokeWidth={2} className={styles.navIcon} />
+      <div className={styles["navBar"]}>
+        <button className={styles["navButton"]} onClick={onGoHome} aria-label="홈">
+          <Home size={21} strokeWidth={2} className={styles["navIcon"]} />
         </button>
 
         <button
           onClick={handleDocumentConvertClick}
-          className={styles.convertButton}
+          className={styles["convertButton"]}
         >
           문서 변환
         </button>
 
-        <button className={styles.navButton} onClick={handleShareClick} aria-label="공유">
-          <Share2 size={20} strokeWidth={2} className={styles.navIcon} />
+        <button className={styles["navButton"]} onClick={handleShareClick} aria-label="공유">
+          <Share2 size={20} strokeWidth={2} className={styles["navIcon"]} />
         </button>
       </div>
 
-      <div className={styles.homeIndicator} />
+      <div className={styles["homeIndicator"]} />
     </div>
   );
 }

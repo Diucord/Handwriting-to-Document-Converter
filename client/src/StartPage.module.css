@@ -719,3 +719,77 @@
   .sheetOverlay { animation: none; }
   .sheetClose { transition: none; }
 }
+
+/* ── 공유 문서 탭 ──────────────────────────────────────────────────── */
+
+/* .tabActive 가 div 였다가 button 이 되었으므로 기본 스타일을 지웁니다 */
+.tabActive,
+.tabInactive {
+  font-family: inherit;
+  -webkit-appearance: none;
+  appearance: none;
+  cursor: pointer;
+}
+
+.shareMeta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+.shareMeta span {
+  padding: 2px 7px;
+  border-radius: 5px;
+  background: var(--bg-sunken);
+  white-space: nowrap;
+}
+
+.shareActions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: none;
+}
+
+.shareBtn {
+  padding: 6px 11px;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--bg-card);
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--blue);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.shareBtn:active { background: var(--bg-sunken); }
+.shareBtnDanger { color: var(--red); }
+
+/* 이력 행의 공유 버튼 */
+.rowShare {
+  margin-top: 4px;
+  padding: 5px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg-card);
+  font-family: inherit;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--blue);
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+.rowShare:active { background: var(--bg-sunken); }
+.rowShare:disabled {
+  color: var(--ink-3);
+  cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shareBtn, .rowShare { transition: none; }
+}
