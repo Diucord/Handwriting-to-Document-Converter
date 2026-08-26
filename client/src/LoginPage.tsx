@@ -1,13 +1,16 @@
 import { useState } from "react";
+import ScreenNav from './ScreenNav';
 import styles from "./LoginPage.module.css";
 
 interface Props {
   onLogin: (email: string, password: string) => Promise<void>;
   onGoSignup: () => void;
   onGoForgotPassword: () => void;
+  /** 랜딩으로 되돌아가기 */
+  onBack?: () => void;
 }
 
-export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword }: Props) {
+export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword, onBack }: Props) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -40,8 +43,9 @@ export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword }: P
 
   return (
     <div className={styles.appContainer}>
+      <ScreenNav onBack={onBack} />
       <div className={styles.header}>
-        <div className={styles.appName}>필기 → 문서 변환기</div>
+        <div className={styles.appName}>Notaformat</div>
       </div>
 
       <div className={styles.formArea}>

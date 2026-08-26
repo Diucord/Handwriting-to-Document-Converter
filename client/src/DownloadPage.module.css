@@ -1,6 +1,8 @@
 /* src/DownloadPage.module.css */
 
 .appContainer {
+    /* ScreenNav 가 absolute 로 얹히므로 기준점이 필요합니다 */
+    position: relative;
     width: 393px;
     height: 100vh;
     margin-left: auto;

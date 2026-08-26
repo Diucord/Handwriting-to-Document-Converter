@@ -1,4 +1,5 @@
 import { useState } from "react";
+import LandingPage from "./LandingPage";
 import StartPage from "./StartPage";
 import ConversionPage from "./ConversionPage";
 import DownloadPage from "./DownloadPage";
@@ -9,7 +10,15 @@ import ProfilePage from "./ProfilePage";
 import { useAuth } from "./useAuth";
 import { apiFetch, apiGet, SERVER_BASE_URL } from "./api";
 
-type Stage = "start" | "convert" | "done" | "login" | "signup" | "forgot-password" | "profile";
+type Stage =
+  | "landing"
+  | "start"
+  | "convert"
+  | "done"
+  | "login"
+  | "signup"
+  | "forgot-password"
+  | "profile";
 
 export interface SessionHistoryItem {
   id: number;
@@ -20,7 +29,8 @@ export interface SessionHistoryItem {
 }
 
 export default function App() {
-  const [step, setStep] = useState<Stage>("start");
+  // 첫 화면은 랜딩. 체험하기를 누르면 로그인 없이 업로드 화면으로 갑니다.
+  const [step, setStep] = useState<Stage>("landing");
   const [images, setImages] = useState<File[]>([]);
   const [pdfUrl, setPdfUrl] = useState<string>("");
   const [wordUrl, setWordUrl] = useState<string>("");
@@ -142,7 +152,7 @@ export default function App() {
     setProgressMessage("");
     setStage("");
     setStageDetail(null);
-    setStep("start");
+    setStep("landing");
   };
 
   if (loading) {
@@ -151,6 +161,14 @@ export default function App() {
 
   return (
     <div className="h-screen">
+      {step === "landing" && (
+        <LandingPage
+          isLoggedIn={!!user}
+          onStart={() => setStep("start")}
+          onGoLogin={() => setStep(user ? "start" : "login")}
+        />
+      )}
+
       {step === "login" && (
         <LoginPage
           onLogin={async (email, pw) => {
@@ -159,6 +177,7 @@ export default function App() {
           }}
           onGoSignup={() => setStep("signup")}
           onGoForgotPassword={() => setStep("forgot-password")}
+          onBack={() => setStep("landing")}
         />
       )}
 
@@ -196,6 +215,7 @@ export default function App() {
           onImagesSelect={handleImagesSelect}
           onGoLogin={() => setStep("login")}
           onGoProfile={() => setStep("profile")}
+          onGoHome={() => setStep("landing")}
         />
       )}
 
@@ -206,6 +226,7 @@ export default function App() {
           progressMessage={progressMessage}
           stage={stage}
           stageDetail={stageDetail}
+          onHome={handleFinish}
         />
       )}
 
@@ -216,6 +237,7 @@ export default function App() {
           wordUrl={wordUrl}
           exportFormat={exportFormat}
           onFinish={handleFinish}
+          onBack={() => setStep("start")}
         />
       )}
     </div>

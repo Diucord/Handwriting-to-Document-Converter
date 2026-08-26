@@ -1,3 +1,4 @@
+import ScreenNav from './ScreenNav';
 import styles from './ConversionPage.module.css';
 
 interface Props {
@@ -8,6 +9,8 @@ interface Props {
   stage?: string;
   /** 현재 단계의 세부 진행 (예: 3/8 페이지) */
   stageDetail?: { done: number; total: number } | null;
+  /** 홈으로 나가기 (진행 중인 변환은 화면에서만 벗어납니다) */
+  onHome?: () => void;
 }
 
 /**
@@ -48,11 +51,13 @@ export default function ConversionPage({
   progressMessage,
   stage,
   stageDetail,
+  onHome,
 }: Props) {
   const currentIndex = STAGES.findIndex((s) => s.key === stage);
 
   return (
     <div className={styles['appContainer']}>
+      <ScreenNav onHome={onHome} title="문서 변환" />
       <div className={styles['contentContainer']}>
         <header className={styles['header']}>
           <h2 className={styles['title']}>문서를 만들고 있습니다</h2>

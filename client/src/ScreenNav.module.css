@@ -1,0 +1,57 @@
+/* 앱 화면 상단 내비게이션 — 393px 모바일 폭 기준 */
+
+.nav {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  height: 52px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  background: transparent;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex: none;
+  border: none;
+  border-radius: 10px;
+  background: transparent;
+  color: #374151;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.btn:hover { background: #f3f4f6; }
+.btn:active { background: #e5e7eb; }
+
+/* 버튼이 없는 쪽 — 가운데 제목이 밀리지 않도록 자리만 차지합니다 */
+.spacer {
+  width: 36px;
+  height: 36px;
+  flex: none;
+}
+
+.title {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: #111827;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn { transition: none; }
+}

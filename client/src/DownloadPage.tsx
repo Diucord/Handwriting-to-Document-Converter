@@ -1,4 +1,5 @@
 import { useEffect, useMemo } from "react";
+import ScreenNav from './ScreenNav';
 import styles from './DownloadPage.module.css';
 
 interface Props {
@@ -7,9 +8,11 @@ interface Props {
     wordUrl: string;
     exportFormat: "pdf" | "word";
     onFinish: () => void;
+    /** 업로드 화면으로 되돌아가기 */
+    onBack?: () => void;
 }
 
-export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, onFinish }: Props) {
+export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, onFinish, onBack }: Props) {
     // 썸네일 ObjectURL 생성 및 컴포넌트 언마운트 시 해제
     const thumbnailUrls = useMemo(
         () => images.map((f) => URL.createObjectURL(f)),
@@ -28,6 +31,7 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
 
     return (
         <div className={styles.appContainer}>
+            <ScreenNav onBack={onBack} onHome={onFinish} title="변환 완료" />
             <div className={styles.contentWrapper}>
 
                 <h2 className={styles.title}>문서 생성 완료!</h2>

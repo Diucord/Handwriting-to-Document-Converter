@@ -1,4 +1,5 @@
 import { useRef, useState, useEffect } from "react";
+import { Home, Share2 } from "lucide-react";
 import { apiGet, SERVER_BASE_URL } from "./api";
 import type { User } from "./useAuth";
 import styles from "./StartPage.module.css";
@@ -19,9 +20,11 @@ interface Props {
   onImagesSelect: (files: File[], format: ExportFormat) => void;
   onGoLogin: () => void;
   onGoProfile: () => void;
+  /** 랜딩(홈)으로 */
+  onGoHome?: () => void;
 }
 
-export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLogin, onGoProfile }: Props) {
+export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLogin, onGoProfile, onGoHome }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const cameraInputRef = useRef<HTMLInputElement>(null);
   const [showActionSheet, setShowActionSheet] = useState(false);
@@ -387,8 +390,8 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
       )}
 
       <div className={styles.navBar}>
-        <button className={styles.navButton}>
-          <img src="/home.png" alt="홈" className={styles.navIcon} />
+        <button className={styles.navButton} onClick={onGoHome} aria-label="홈">
+          <Home size={21} strokeWidth={2} className={styles.navIcon} />
         </button>
 
         <button
@@ -398,8 +401,8 @@ export default function StartPage({ user, sessionHistory, onImagesSelect, onGoLo
           문서 변환
         </button>
 
-        <button className={styles.navButton} onClick={handleShareClick}>
-          <img src="/share.png" alt="공유" className={styles.navIcon} />
+        <button className={styles.navButton} onClick={handleShareClick} aria-label="공유">
+          <Share2 size={20} strokeWidth={2} className={styles.navIcon} />
         </button>
       </div>
 

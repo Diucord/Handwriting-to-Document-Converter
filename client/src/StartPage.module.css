@@ -317,21 +317,40 @@
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 4%;
+  height: 60px;
   border-top: 1px solid #e5e7eb;
   background-color: #ffffff;
   display: flex;
   justify-content: space-around;
-  align-items: flex-start;
-  padding-top: 20px;
-  padding-bottom: 15%;
+  align-items: center;
+  /* height 를 4% → 60px 로 바꿨으므로 이전 보정 패딩은 제거합니다 */
+  padding: 0 12px;
+  box-sizing: border-box;
   z-index: 30;
 }
 .navButton {
-  padding-top: 8px;
-  font-size: 18px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
   background-color: #ffffff;
   border: none;
+  border-radius: 10px;
+  color: #6b7280;
+  cursor: pointer;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+.navButton:hover {
+  background-color: #f3f4f6;
+  color: #111827;
+}
+
+/* lucide 아이콘 — 이전에는 png 였고 이 클래스에 규칙이 없었습니다 */
+.navIcon {
+  display: block;
+  flex: none;
 }
 .convertButton {
   padding: 10px 28px;
