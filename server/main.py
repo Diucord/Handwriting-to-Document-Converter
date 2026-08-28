@@ -24,7 +24,32 @@ from models import ConversionHistory
 from auth import get_optional_user, User as AuthUser
 from routers import auth as auth_router, history as history_router, share as share_router
 
-Base.metadata.create_all(bind=engine)
+# 테이블 생성.
+#
+# import 시점에 그대로 두면 DB 가 잠깐 내려간 사이에 프로세스가 죽고,
+# 컨테이너가 재시작을 반복하면서 서비스 전체가 멈춥니다. 실제로 Fly
+# Postgres 가 유휴 상태로 정지했을 때 백엔드가 함께 죽었습니다.
+#
+# DB 연결은 재시도하고, 끝내 실패하면 경고만 남기고 기동합니다.
+# 변환 자체는 DB 없이도 동작하므로(비로그인 변환), DB 장애가 서비스
+# 전체 중단으로 번지지 않게 합니다.
+def _init_db(retries: int = 5, delay: float = 3.0) -> None:
+    import time
+
+    for attempt in range(1, retries + 1):
+        try:
+            Base.metadata.create_all(bind=engine)
+            return
+        except Exception as exc:  # noqa: BLE001
+            if attempt == retries:
+                print(f"[db] 초기화 실패, DB 없이 기동합니다: {exc}", flush=True)
+                return
+            print(f"[db] 연결 실패({attempt}/{retries}), {delay}s 후 재시도", flush=True)
+            time.sleep(delay)
+
+
+_init_db()
+
 app = FastAPI()
 
 

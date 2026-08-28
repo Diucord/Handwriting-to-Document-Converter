@@ -27,11 +27,16 @@ if not DATABASE_URL:
     _db_path = os.path.join(os.path.dirname(__file__), "notaformat.db")
     DATABASE_URL = f"sqlite:///{_db_path}"
 
-# SQLite 는 기본적으로 생성 스레드에서만 쓸 수 있는데, FastAPI 는
-# 여러 스레드에서 세션을 열기 때문에 이 옵션이 필요합니다.
-_connect_args = (
-    {"check_same_thread": False} if DATABASE_URL.startswith("sqlite") else {}
-)
+if DATABASE_URL.startswith("sqlite"):
+    # SQLite 는 기본적으로 생성 스레드에서만 쓸 수 있는데, FastAPI 는
+    # 여러 스레드에서 세션을 열기 때문에 이 옵션이 필요합니다.
+    _connect_args = {"check_same_thread": False}
+elif DATABASE_URL.startswith("postgresql"):
+    # 타임아웃이 없으면 DB 가 응답하지 않을 때 기동이 무한정 멈춥니다.
+    # 재시도 로직이 동작하려면 연결 시도가 유한 시간 안에 끝나야 합니다.
+    _connect_args = {"connect_timeout": 5}
+else:
+    _connect_args = {}
 
 engine = create_engine(DATABASE_URL, pool_pre_ping=True, connect_args=_connect_args)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
