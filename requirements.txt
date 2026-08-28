@@ -29,6 +29,8 @@ python-multipart>=0.0.9
 # ── 인증 / DB ────────────────────────────────────────────────────────────────
 SQLAlchemy>=2.0.0
 PyMySQL>=1.1.0
+# PostgreSQL 드라이버 (Fly.io 배포 시 사용)
+psycopg[binary]>=3.2.0
 cryptography>=42.0.0
 python-jose[cryptography]>=3.3.0
 passlib[bcrypt]>=1.7.4

@@ -12,6 +12,15 @@ load_dotenv()
 # 넣어 주면 MySQL·PostgreSQL 로 그대로 전환됩니다.
 DATABASE_URL = os.getenv("DATABASE_URL", "").strip()
 
+# 호스팅 업체가 넣어 주는 URL 은 드라이버 접두사가 없는 경우가 많습니다.
+# Fly.io 의 `postgres attach` 는 `postgres://` 로 넣어 주는데, SQLAlchemy 2.x
+# 는 이 접두사를 인식하지 못하므로 기동 시 예외가 납니다.
+# 접속 정보를 사람이 다시 편집하지 않아도 되도록 여기서 정규화합니다.
+if DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgres://"):]
+elif DATABASE_URL.startswith("postgresql://"):
+    DATABASE_URL = "postgresql+psycopg://" + DATABASE_URL[len("postgresql://"):]
+
 if not DATABASE_URL:
     # 컨테이너 재시작 시 초기화되므로, 계정·이력을 보존하려면
     # 이 파일 경로에 볼륨을 붙이거나 DATABASE_URL 을 지정합니다.
