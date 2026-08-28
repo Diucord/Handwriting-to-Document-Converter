@@ -1,14 +1,21 @@
 // 백엔드 주소.
 //
-// 배포 시에는 빌드 전에 VITE_API_BASE_URL 을 지정합니다.
-//   예) VITE_API_BASE_URL=https://api.example.com npm run build
+// 우선순위
+//   1. VITE_API_BASE_URL (빌드 시 지정) — 다른 백엔드를 붙일 때 씁니다
+//   2. 로컬 개발(localhost)  → 같은 호스트의 4000 포트
+//   3. 그 외(배포된 페이지)  → Fly.io 백엔드
 //
-// 지정하지 않으면 개발 환경으로 보고 같은 호스트의 4000 포트를 씁니다.
-// (프로덕션에서 이 기본값을 쓰면 HTTPS 페이지에서 HTTP 를 호출하게 되어
-//  브라우저가 요청을 차단합니다)
+// 3번 기본값이 없으면 배포본이 존재하지 않는 주소를 부르고, HTTPS
+// 페이지에서 HTTP 요청은 브라우저가 차단하므로 변환이 동작하지 않습니다.
+// 환경변수를 잊어도 배포본이 살아 있도록 기본값을 코드에 둡니다.
+const PROD_API = "https://notaformat.fly.dev";
+
+const _host = window.location.hostname;
+const _isLocal = _host === "localhost" || _host === "127.0.0.1";
+
 const SERVER_BASE_URL =
   import.meta.env["VITE_API_BASE_URL"]?.replace(/\/$/, "") ||
-  `http://${window.location.hostname}:4000`;
+  (_isLocal ? `http://${_host}:4000` : PROD_API);
 
 export { SERVER_BASE_URL };
 
