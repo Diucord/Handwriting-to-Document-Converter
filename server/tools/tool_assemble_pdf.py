@@ -128,7 +128,9 @@ _PAGE_TEMPLATE = """\
 </body>
 </html>"""
 
-_CONVERTED_DIR = os.path.abspath(
+# main.py 와 같은 환경변수를 본다. 한쪽만 볼륨을 가리키면 PDF 를 쓴 위치와
+# 정적 서빙 위치가 어긋나 다운로드가 404 가 된다.
+_CONVERTED_DIR = os.getenv("CONVERTED_DIR", "").strip() or os.path.abspath(
     os.path.join(os.path.dirname(__file__), "..", "converted")
 )
 

@@ -92,7 +92,108 @@ VITE_API_BASE_URL=https://your-backend-host npm run build   # dist/ 생성
 지정하지 않으면 `http://<현재호스트>:4000` 을 호출하는데, HTTPS 로 서빙되는
 페이지에서 HTTP 요청은 브라우저가 차단하므로 프로덕션에서는 반드시 넣어야 합니다.
 
+## Fly.io 배포
+
+백엔드는 Fly.io 에 올립니다. `fly.toml` 이 저장소에 있으므로 아래 순서만
+따르면 됩니다.
+
+### 1) flyctl 설치·로그인
+
+```powershell
+# Windows (PowerShell)
+iwr https://fly.io/install.ps1 -useb | iex
+```
+
+```bash
+flyctl auth login
+```
+
+### 2) 앱 생성
+
+```bash
+cd ai_report_maker
+flyctl launch --no-deploy --copy-config
+```
+
+`--copy-config` 를 붙여야 저장소의 `fly.toml` 을 그대로 씁니다. 빼면
+flyctl 이 설정을 새로 만들면서 볼륨·메모리 설정이 사라집니다.
+
+앱 이름이 이미 쓰이고 있으면 `fly.toml` 의 `app` 값을 바꿉니다.
+
+### 3) 볼륨 생성
+
+```bash
+flyctl volumes create notaformat_data --size 3 --region nrt
+```
+
+변환한 PDF 를 담습니다. 이 볼륨이 없으면 재배포·재시작마다 산출물이
+전부 사라집니다. 리전은 `fly.toml` 의 `primary_region` 과 같아야 합니다.
+
+### 4) 환경변수 주입
+
+```bash
+flyctl secrets set   GEMINI_API_KEY="..."   OPENAI_API_KEY="..."   JWT_SECRET_KEY="$(python -c 'import secrets;print(secrets.token_urlsafe(48))')"   DATABASE_URL=""
+```
+
+`DATABASE_URL` 을 비우면 SQLite 로 동작하며, 파일이 `/data` 볼륨 밖에
+생기므로 재시작 시 계정·이력이 사라집니다. 계정을 유지하려면 외부
+PostgreSQL 을 만들어 지정합니다.
+
+```bash
+flyctl postgres create --name notaformat-db --region nrt
+flyctl postgres attach notaformat-db
+```
+
+`attach` 는 `DATABASE_URL` 을 자동으로 넣어 줍니다. 다만 드라이버 접두사가
+`postgres://` 로 오므로, SQLAlchemy 가 읽도록 아래처럼 바꿔야 합니다.
+
+```bash
+flyctl secrets set DATABASE_URL="postgresql+psycopg://<attach 가 준 값의 나머지>"
+```
+
+### 5) 배포
+
+```bash
+flyctl deploy
+```
+
+`https://notaformat.fly.dev/docs` 가 뜨면 정상입니다.
+
+### 6) 프런트엔드 연결
+
+Vercel 프로젝트의 환경변수에 백엔드 주소를 넣고 재배포합니다.
+
+```
+VITE_API_BASE_URL = https://notaformat.fly.dev
+```
+
+이 값이 없으면 프런트가 `http://<현재호스트>:4000` 을 호출하는데, HTTPS
+페이지에서 HTTP 요청은 브라우저가 차단하므로 변환이 동작하지 않습니다.
+
+### 설정 근거
+
+| 항목 | 값 | 이유 |
+|---|---|---|
+| 메모리 | 2GB | Chromium 렌더링에 1GB 로는 OOM 이 납니다 |
+| `min_machines_running` | 1 | 변환이 수십 초라 콜드 스타트·중단을 피해야 합니다 |
+| `auto_stop_machines` | false | 요청 도중 머신이 멈추면 변환이 통째로 버려집니다 |
+| 동시 요청 | soft 8 / hard 12 | Chromium 이 메모리를 많이 써서 낮게 잡았습니다 |
+| 리전 | `nrt` (도쿄) | 한국에서 가장 가깝습니다 |
+
+### 확인
+
+```bash
+flyctl status          # 머신 상태
+flyctl logs            # 실시간 로그
+flyctl ssh console     # 컨테이너 접속
+```
+
 ## 남은 것
 
-- 변환 산출물의 영구 저장소(S3 등) 연결
+- **Docker 이미지 빌드는 로컬에서 검증하지 못했습니다.** Docker Desktop 을
+  띄운 뒤 `docker build -t notaformat .` 로 한 번 확인하는 편이 안전합니다.
+  Playwright 베이스 이미지 태그(`v1.52.0-jammy`)와 `requirements.txt` 의
+  playwright 버전이 어긋나면 이 단계에서 드러납니다.
+- 계정·이력을 유지하려면 외부 PostgreSQL 연결이 필요합니다. SQLite 파일은
+  `/data` 볼륨 밖에 생기므로 재시작 시 사라집니다.
 - `render.js` 와 puppeteer 의존성 정리 (현재 미사용)

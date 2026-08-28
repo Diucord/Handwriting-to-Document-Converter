@@ -44,11 +44,21 @@ app.include_router(auth_router.router)
 app.include_router(history_router.router)
 app.include_router(share_router.router)
 
-_CONVERTED_DIR = os.path.join(os.path.dirname(__file__), "converted")
+# 변환 산출물·업로드 경로.
+#
+# 컨테이너는 재시작 시 로컬 디스크가 초기화되므로, 배포 환경에서는
+# 볼륨을 마운트하고 이 환경변수로 그 경로를 가리킵니다.
+# (Fly.io 는 fly.toml 의 [mounts] 와 [env] 에서 지정합니다)
+# 값이 없으면 기존과 동일하게 server/ 아래를 씁니다.
+_CONVERTED_DIR = os.getenv("CONVERTED_DIR", "").strip() or os.path.join(
+    os.path.dirname(__file__), "converted"
+)
 os.makedirs(_CONVERTED_DIR, exist_ok=True)
 app.mount("/converted", StaticFiles(directory=_CONVERTED_DIR), name="converted")
 
-_UPLOADS_DIR = os.path.join(os.path.dirname(__file__), "uploads")
+_UPLOADS_DIR = os.getenv("UPLOADS_DIR", "").strip() or os.path.join(
+    os.path.dirname(__file__), "uploads"
+)
 os.makedirs(_UPLOADS_DIR, exist_ok=True)
 app.mount("/uploads", StaticFiles(directory=_UPLOADS_DIR), name="uploads")
 
