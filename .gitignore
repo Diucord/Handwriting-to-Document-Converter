@@ -10,3 +10,6 @@ server/converted/
 client/dist/
 *.db
 *.sqlite3
+
+# 배포 스크립트 (API 키 포함 — 커밋 금지)
+fly-deploy.ps1
