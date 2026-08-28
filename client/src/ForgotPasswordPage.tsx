@@ -41,26 +41,26 @@ export default function ForgotPasswordPage({ onGoLogin }: Props) {
   };
 
   return (
-    <div className={styles.appContainer}>
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={onGoLogin}>
+    <div className={styles["appContainer"]}>
+      <div className={styles["header"]}>
+        <button className={styles["backButton"]} onClick={onGoLogin}>
           ←
         </button>
-        <div className={styles.appName}>비밀번호 찾기</div>
+        <div className={styles["appName"]}>비밀번호 찾기</div>
       </div>
 
-      <div className={styles.formArea}>
-        <p className={styles.description}>
+      <div className={styles["formArea"]}>
+        <p className={styles["description"]}>
           가입 시 사용한 이메일을 입력하시면
           <br />
           임시 비밀번호를 보내드립니다.
         </p>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>이메일</label>
+        <div className={styles["inputGroup"]}>
+          <label className={styles["label"]}>이메일</label>
           <input
             type="email"
-            className={styles.input}
+            className={styles["input"]}
             placeholder="이메일을 입력하세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -68,11 +68,11 @@ export default function ForgotPasswordPage({ onGoLogin }: Props) {
           />
         </div>
 
-        {error && <div className={styles.error}>{error}</div>}
-        {message && <div className={styles.success}>{message}</div>}
+        {error && <div className={styles["error"]}>{error}</div>}
+        {message && <div className={styles["success"]}>{message}</div>}
 
         <button
-          className={styles.submitButton}
+          className={styles["submitButton"]}
           onClick={handleSubmit}
           disabled={loading}
         >
@@ -80,13 +80,13 @@ export default function ForgotPasswordPage({ onGoLogin }: Props) {
         </button>
       </div>
 
-      <div className={styles.bottomLinks}>
-        <button className={styles.linkButton} onClick={onGoLogin}>
+      <div className={styles["bottomLinks"]}>
+        <button className={styles["linkButton"]} onClick={onGoLogin}>
           로그인으로 돌아가기
         </button>
       </div>
 
-      <div className={styles.homeIndicator} />
+      <div className={styles["homeIndicator"]} />
     </div>
   );
 }

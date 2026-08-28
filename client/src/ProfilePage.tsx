@@ -63,19 +63,19 @@ export default function ProfilePage({
   };
 
   return (
-    <div className={styles.appContainer}>
-      <div className={styles.header}>
-        <button className={styles.backButton} onClick={onBack}>
+    <div className={styles["appContainer"]}>
+      <div className={styles["header"]}>
+        <button className={styles["backButton"]} onClick={onBack}>
           ←
         </button>
-        <div className={styles.appName}>내 정보</div>
+        <div className={styles["appName"]}>내 정보</div>
       </div>
 
-      <div className={styles.profileSection}>
-        <div className={styles.avatarWrapper} onClick={handleImageClick}>
-          <img src={profileSrc} alt="프로필" className={styles.avatar} />
-          <div className={styles.cameraOverlay}>
-            <span className={styles.cameraIcon}>📷</span>
+      <div className={styles["profileSection"]}>
+        <div className={styles["avatarWrapper"]} onClick={handleImageClick}>
+          <img src={profileSrc} alt="프로필" className={styles["avatar"]} />
+          <div className={styles["cameraOverlay"]}>
+            <span className={styles["cameraIcon"]}>📷</span>
           </div>
         </div>
         <input
@@ -87,54 +87,54 @@ export default function ProfilePage({
         />
       </div>
 
-      <div className={styles.formArea}>
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>실명</label>
+      <div className={styles["formArea"]}>
+        <div className={styles["inputGroup"]}>
+          <label className={styles["label"]}>실명</label>
           <input
             type="text"
-            className={styles.input}
+            className={styles["input"]}
             value={realName}
             onChange={(e) => setRealName(e.target.value)}
           />
         </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>닉네임</label>
+        <div className={styles["inputGroup"]}>
+          <label className={styles["label"]}>닉네임</label>
           <input
             type="text"
-            className={styles.input}
+            className={styles["input"]}
             value={nickname}
             onChange={(e) => setNickname(e.target.value)}
           />
         </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>이메일</label>
+        <div className={styles["inputGroup"]}>
+          <label className={styles["label"]}>이메일</label>
           <input
             type="email"
-            className={styles.inputReadonly}
+            className={styles["inputReadonly"]}
             value={user.email}
             readOnly
           />
         </div>
 
-        {error && <div className={styles.error}>{error}</div>}
-        {success && <div className={styles.success}>{success}</div>}
+        {error && <div className={styles["error"]}>{error}</div>}
+        {success && <div className={styles["success"]}>{success}</div>}
 
         <button
-          className={styles.saveButton}
+          className={styles["saveButton"]}
           onClick={handleSave}
           disabled={saving}
         >
           {saving ? "저장 중..." : "저장"}
         </button>
 
-        <button className={styles.logoutButton} onClick={onLogout}>
+        <button className={styles["logoutButton"]} onClick={onLogout}>
           로그아웃
         </button>
       </div>
 
-      <div className={styles.homeIndicator} />
+      <div className={styles["homeIndicator"]} />
     </div>
   );
 }

@@ -42,20 +42,20 @@ export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword, onB
   };
 
   return (
-    <div className={styles.appContainer}>
+    <div className={styles["appContainer"]}>
       <ScreenNav onBack={onBack} />
-      <div className={styles.header}>
-        <div className={styles.appName}>Notaformat</div>
+      <div className={styles["header"]}>
+        <div className={styles["appName"]}>Notaformat</div>
       </div>
 
-      <div className={styles.formArea}>
-        <h2 className={styles.title}>로그인</h2>
+      <div className={styles["formArea"]}>
+        <h2 className={styles["title"]}>로그인</h2>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>이메일</label>
+        <div className={styles["inputGroup"]}>
+          <label className={styles["label"]}>이메일</label>
           <input
             type="email"
-            className={styles.input}
+            className={styles["input"]}
             placeholder="이메일을 입력하세요"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -63,11 +63,11 @@ export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword, onB
           />
         </div>
 
-        <div className={styles.inputGroup}>
-          <label className={styles.label}>비밀번호</label>
+        <div className={styles["inputGroup"]}>
+          <label className={styles["label"]}>비밀번호</label>
           <input
             type="password"
-            className={styles.input}
+            className={styles["input"]}
             placeholder="비밀번호를 입력하세요"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -75,10 +75,10 @@ export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword, onB
           />
         </div>
 
-        {error && <div className={styles.error}>{error}</div>}
+        {error && <div className={styles["error"]}>{error}</div>}
 
         <button
-          className={styles.loginButton}
+          className={styles["loginButton"]}
           onClick={handleSubmit}
           disabled={loading}
         >
@@ -86,17 +86,17 @@ export default function LoginPage({ onLogin, onGoSignup, onGoForgotPassword, onB
         </button>
       </div>
 
-      <div className={styles.bottomLinks}>
-        <button className={styles.linkButton} onClick={onGoSignup}>
+      <div className={styles["bottomLinks"]}>
+        <button className={styles["linkButton"]} onClick={onGoSignup}>
           회원가입
         </button>
-        <span className={styles.divider}>|</span>
-        <button className={styles.linkButton} onClick={onGoForgotPassword}>
+        <span className={styles["divider"]}>|</span>
+        <button className={styles["linkButton"]} onClick={onGoForgotPassword}>
           비밀번호 찾기
         </button>
       </div>
 
-      <div className={styles.homeIndicator} />
+      <div className={styles["homeIndicator"]} />
     </div>
   );
 }

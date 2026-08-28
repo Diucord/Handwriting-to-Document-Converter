@@ -31,37 +31,37 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
     };
 
     return (
-        <div className={styles.appContainer}>
+        <div className={styles["appContainer"]}>
             <ScreenNav onBack={onBack} onHome={onFinish} title="변환 완료" />
-            <div className={styles.contentWrapper}>
+            <div className={styles["contentWrapper"]}>
 
                 <span className={styles["badge"]} aria-hidden="true">
                     <CircleCheck size={38} strokeWidth={2} />
                 </span>
 
-                <h2 className={styles.title}>문서가 완성되었습니다</h2>
-                <p className={styles.message}>
+                <h2 className={styles["title"]}>문서가 완성되었습니다</h2>
+                <p className={styles["message"]}>
                     이미지 {images.length}장을 구조화된 문서로 변환했습니다.
                 </p>
 
                 {/* 원본 이미지 썸네일 그리드 */}
-                <div className={styles.thumbnailGrid}>
+                <div className={styles["thumbnailGrid"]}>
                     {thumbnailUrls.map((url, i) => (
                         <img
                             key={i}
                             src={url}
                             alt={`이미지 ${i + 1}`}
-                            className={styles.thumbnail}
+                            className={styles["thumbnail"]}
                         />
                     ))}
                 </div>
 
                 {/* 선택한 포맷에 따라 다운로드 버튼 표시 */}
-                <div className={styles.buttonRow}>
+                <div className={styles["buttonRow"]}>
                     {exportFormat === "pdf" && pdfUrl && (
                         <button
                             onClick={() => handleDownload(pdfUrl, "converted_document.pdf")}
-                            className={styles.pdfButton}
+                            className={styles["pdfButton"]}
                         >
                             <Download size={18} strokeWidth={2.3} aria-hidden="true" />
                             PDF 다운로드
@@ -70,7 +70,7 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
                     {exportFormat === "word" && wordUrl && (
                         <button
                             onClick={() => handleDownload(wordUrl, "converted_document.docx")}
-                            className={styles.wordButton}
+                            className={styles["wordButton"]}
                         >
                             <Download size={18} strokeWidth={2.3} aria-hidden="true" />
                             Word 다운로드
@@ -78,7 +78,7 @@ export default function DownloadPage({ images, pdfUrl, wordUrl, exportFormat, on
                     )}
                 </div>
 
-                <button onClick={onFinish} className={styles.homeButton}>
+                <button onClick={onFinish} className={styles["homeButton"]}>
                     홈으로 돌아가기
                 </button>
             </div>
